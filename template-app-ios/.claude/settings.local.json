@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:claude.ai)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

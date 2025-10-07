@@ -1,0 +1,16 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "BR2799QP9Y.dk.fitnessx.app.development",
+                "paths": ["/app/*"]
+            }
+        ]
+    },
+    "webcredentials": {
+      "apps": [ 
+        "BR2799QP9Y.dk.fitnessx.app.development"
+      ]
+    }
+}

@@ -1,0 +1,216 @@
+/* 
+  Localizable.strings
+  customerapp
+
+  Created by Tommy Sadiq Hinrichsen on 02/01/2023.
+  
+*/
+
+// TABBAR
+"tabbar.dashboard" = "Hjem";
+"tabbar.search" = "Søg";
+"tabbar.entities" = "Favoritter";
+"tabbar.more" = "Mere";
+
+// LOGIN
+"login.title" = "VELKOMMEN";
+"login.body" = "Log ind med de oplysninger, du har fået i din velkomstmail.";
+"login.textfield.username.placeholder" = "Email";
+"login.textfield.password.placeholder" = "Adgangskode";
+"login.button.forgot.title" = "Glemt adgangskode";
+"login.button.login.title" = "LOGIN";
+
+// FORGOT PASSWORD
+
+"forgot_password.title" = "GLEMT ADGANGSKODE?";
+"forgot_password.body" = "Skriv din e-mailadresse her. Så sender vi dig et link.";
+"forgot_password.textfield.placeholder" = "Email";
+"forgot_password.button.title" = "Gendan adgangskode";
+"forgot_password.alert.title" = "Vi har sendt dig en mail med oplysninger";
+
+// ONBOARDING
+
+"onboarding.step1.title" = "Lokation";
+"onboarding.step1.body" = "Vi bruger din lokation til bla bla bla bla bla.";
+"onboarding.step2.title" = "Beskeder";
+"onboarding.step2.body" = "Vi bruger push beskeder til bla bla bla bla bla";
+"onboarding.step3.title" = "Kamera";
+"onboarding.step3.body" = "Vi bruger kameraet til bla bla bla bla bla";
+
+"onboarding.button.title" = "NÆSTE";
+
+// DASHBOARD
+
+// PRODUCTS
+
+"product.header.noBrand.title" = "Ukendt";
+"product.search.placehoder" = "Søg";
+
+// PRODUCTS FILFTER
+
+"product.filter.clearFilters" = "Ryd";
+"product.filter.emptyView.title" = "INGEN\nRESULTATER";
+"product.filter.emptyView.body" = "Vi kunne ikke finde nogle filtre, der matcher din søgning.";
+"product.filter.button.title" = "GEM OG FORTSÆT";
+
+// FILTER
+"category.smartphones" = "Telefoner";
+"category.laptops" = "Bærbare";
+"category.fragrances" = "Parfumer";
+"category.skincare" = "Hudpleje";
+"category.groceries" = "Dagligvarer";
+"category.homeDecoration" = "Dekoration";
+"category.furniture" = "Møbler";
+"category.tops" = "Toppe";
+"category.womensDresses" = "Kjoler";
+"category.womensShoes" = "Damesko";
+"category.mensShirts" = "Skjorter";
+"category.mensShoes" = "Herresko";
+"category.mensWatches" = "Mandeure";
+"category.womensWatches" = "Dameure";
+"category.womensBags" = "Tasker";
+"category.womensJewellery" = "Smykker";
+"category.sunglasses" = "Solbriller";
+"category.automotive" = "Køretøjer";
+"category.motorcycle" = "Motorcykler";
+"category.lighting" = "Belysning";
+
+"product.filter.category" = "Kategori";
+"product.filter.brand" = "Mærke";
+
+"filter.all" = "Alle";
+"filter.selected" = "%@ valgt";
+
+// PRODUCTS
+
+"product.segment.am.button" = "A-M (%@)";
+"product.segment.nz.button" = "N-Z (%@)";
+"product.segment.am.buttonEmpty" = "A-M";
+"product.segment.nz.buttonEmpty" = "N-Z";
+
+
+// PRODUCT DETAILS
+
+"product.details.price" = "%@ DKK";
+"product.details.stock" = "%@ tilbage på lager";
+"product.details.discount" = "%@ %%";
+"product.details.remove" = "Fjern";
+"product.details.add" = "Tilføj";
+
+"product.details.emptyView.title" = "INGEN\nFAVORITTER";
+"product.details.emptyView.button" = "VÆLG FAVORITTER";
+
+"product.details.rating.caption" = "Rating";
+"product.details.notice.fewProducts" = "Der er kun få produkter tilbage, skynd dig at bestille hvis du vil være sikker på at få en.";
+"product.details.notice.discount" = "Dette produkt er ekstra nedsat i denne periode.";
+
+"product.details.details.caption" = "Detaljer";
+"product.details.discount.caption" = "Rabat";
+
+// MORE
+
+"more.caption.settings" = "Indstillinger";
+"more.label.profile" = "Profil";
+"more.label.feature2" = "Feature 2";
+"more.caption.faceId" = "FaceID";
+"more.label.secret" = "Hemmeligt";
+"more.button.logout" = "LOG UD";
+
+// PROFILE
+
+"profile.caption.profile" = "Profil";
+"profile.caption.firstName" = "Fornavn";
+"profile.textfield.placeholder.firstName" = "Jens";
+"profile.caption.lastName" = "Efternavn";
+"profile.textfield.placeholder.lastName" = "Hansen";
+"profile.caption.birthdate" = "Fødselsdato";
+"profile.textfield.placeholder.birthdate" = "01-01-1981";
+"profile.caption.phone" = "Tlf.";
+"profile.textfield.placeholder.phoneNumber" = "00000000";
+"profile.caption.email" = "Email";
+"profile.textfield.placeholder.email" = "jens@hansen.dk";
+"profile.caption.address" = "Adresse";
+"profile.caption.streetAddress" = "Vejnavn";
+"profile.textfield.placeholder.streetAddress" = "Æblevej 36";
+"profile.caption.zipCode" = "Postnr.";
+"profile.textfield.placeholder.zipCode" = "1000";
+"profile.caption.city" = "By";
+"profile.textfield.placeholder.city" = "Andeby";
+"profile.caption.country" = "Land";
+"profile.textfield.placeholder.country" = "Danmark";
+"profile.caption.changePassword" = "Adgangskode";
+"profile.button.changePassword" = "Skift adgangskode";
+"profile.caption.validateBirthday" = "Valider";
+"profile.button.validateBirthday" = "Valider din alder";
+"profile.button.removeValidation" = "Fjern alders validering";
+"profile.button.save" = "GEM";
+
+// COUNTRY SEARCH
+
+"profile.country.searchfield.placeholder" = "Fx Danmark";
+
+// ADDRESS SEARCH
+
+"profile.address.searchfield.placeholder" = "Æblevej 36, 1000 Andeby";
+
+// PASSWORD
+
+"password.caption.oldPassword" = "Gammel adgangskode";
+"password.textfield.placeholder.oldPassword" = "";
+
+"password.caption.password" = "Ny adgangskode";
+"password.textfield.placeholder.password" = "";
+
+"password.caption.repeatPassword" = "Gentag ny adgangskode";
+"password.textfield.placeholder.repeatPassword" = "";
+
+"password.button.save" = "GEM";
+
+
+
+// PIN ENROLL
+"pin.enroll.title" = "OPRET SIKKERHEDSKODE";
+"pin.enroll.body" = "Vælg den 4-cifrede sikkerhedskode, du vil benytte se/redigere dine betalingskort.";
+"pin.enroll.repeat" = "Bekræft din kode";
+"pin.enroll.button.submit" = "Gem sikkerhedskode";
+
+// PIN VALIDATION
+"pin.validation.title" = "INDTAST SIKKERHEDSKODE";
+"pin.validation.button.forgot" = "Jeg har glemt min kode";
+"pin.validation.button.submit" = "Valider";
+
+// PIN CHANGE
+"pin.change.title" = "SKIFT SIKKERHEDSKODE";
+"pin.change.body" = "Vælg den 4-cifrede sikkerhedskode, du vil benytte se/redigere dine betalingskort.";
+"pin.change.bodyRepeat" = "Bekræft din kode";
+"pin.change.button.submit" = "Gem sikkerhedskode";
+
+// ALERT
+"alert.log_out.title" = "Log ud";
+"alert.log_out.message" = "Er du sikker på at du ville logge ud?";
+"alert.log_out.cancel" = "Annuller";
+"alert.log_out.accept" = "Log ud";
+
+"alert.pin.notMatching.message" = "Pin er ikke ens";
+
+"alert.pin.faceId.title" = "Face ID";
+"alert.pin.faceId.message" = "Vil du bruge Face ID i stedet for adgangskode næste gang?";
+
+"alert.pin.touchId.title" = "Touch ID";
+"alert.pin.touchId.message" = "Vil du bruge Touch ID i stedet for adgangskode næste gang?";
+
+"alert.pin.reset.title" = "Nulstil";
+"alert.pin.reset.message" = "Hvis du nulstiller din kode bliver du logget ud af appen og alle data tilhørende din pin vil blive slettet";
+
+// BUTTON
+"button.ok" = "OK";
+"button.cancel" = "Afbryd";
+"button.dismiss" = "Annuller";
+"button.back" = "Tilbage";
+
+// ERROR
+"error.generic.title" = "Fejl";
+"error.generic.message" = "Der er sket en ukendt fejl";
+
+"error.login.message" = "Den indtastede email eller adgangskode er ugyldig. Kan du ikke huske din adgangskode kan du nulstille den.";
+"error.profile.missing_country" = "Vælg land først";

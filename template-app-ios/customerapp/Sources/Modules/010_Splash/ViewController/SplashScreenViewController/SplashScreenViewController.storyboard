@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Splash Screen View Controller-->
+        <scene sceneID="FA8-zl-STp">
+            <objects>
+                <viewController storyboardIdentifier="SplashScreenViewController" id="923-4f-cwt" customClass="SplashScreenViewController" customModule="Development" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eM4-72-H8Y">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash/background" translatesAutoresizingMaskIntoConstraints="NO" id="DTB-ft-xhA" propertyAccessControl="all">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4d6-M1-WbP">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="13d-nQ-zAX">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9bI-Pr-a7p"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="13d-nQ-zAX" firstAttribute="bottom" secondItem="4d6-M1-WbP" secondAttribute="bottom" id="7o4-BR-tXJ"/>
+                            <constraint firstItem="13d-nQ-zAX" firstAttribute="trailing" secondItem="4d6-M1-WbP" secondAttribute="trailing" id="CEU-vo-1Oj"/>
+                            <constraint firstAttribute="trailing" secondItem="DTB-ft-xhA" secondAttribute="trailing" id="Ezs-Vx-mnr"/>
+                            <constraint firstItem="DTB-ft-xhA" firstAttribute="leading" secondItem="eM4-72-H8Y" secondAttribute="leading" id="FZq-H2-e4O"/>
+                            <constraint firstItem="4d6-M1-WbP" firstAttribute="leading" secondItem="DTB-ft-xhA" secondAttribute="leading" id="SqG-xn-VTa"/>
+                            <constraint firstItem="DTB-ft-xhA" firstAttribute="top" secondItem="eM4-72-H8Y" secondAttribute="top" id="Zgv-pi-I3X"/>
+                            <constraint firstItem="4d6-M1-WbP" firstAttribute="bottom" secondItem="DTB-ft-xhA" secondAttribute="bottom" id="bfl-RO-Lz1"/>
+                            <constraint firstItem="13d-nQ-zAX" firstAttribute="top" secondItem="4d6-M1-WbP" secondAttribute="top" id="djx-hR-ib7"/>
+                            <constraint firstAttribute="bottom" secondItem="DTB-ft-xhA" secondAttribute="bottom" id="gPi-dQ-gxd"/>
+                            <constraint firstItem="4d6-M1-WbP" firstAttribute="trailing" secondItem="DTB-ft-xhA" secondAttribute="trailing" id="isi-pS-AjH"/>
+                            <constraint firstItem="4d6-M1-WbP" firstAttribute="top" secondItem="DTB-ft-xhA" secondAttribute="top" id="kmn-BC-qXi"/>
+                            <constraint firstItem="13d-nQ-zAX" firstAttribute="leading" secondItem="4d6-M1-WbP" secondAttribute="leading" id="l0y-kY-JtY"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="playerView" destination="4d6-M1-WbP" id="5bZ-Jx-wjK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BxX-zZ-7gy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-111" y="-189"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Splash/background" width="810" height="1440"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

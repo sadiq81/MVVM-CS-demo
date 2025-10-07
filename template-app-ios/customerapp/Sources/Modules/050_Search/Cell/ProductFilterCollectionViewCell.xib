@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gTV-IL-0wX" customClass="ProductFilterCollectionViewCell" customModule="Development" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="351" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="351" height="50"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wPk-Kb-64x">
+                        <rect key="frame" x="16" y="14.666666666666664" width="250" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="751" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qw3-ty-fKS">
+                        <rect key="frame" x="274" y="11" width="63" height="28"/>
+                        <color key="onTintColor" name="Background/brand"/>
+                        <color key="thumbTintColor" name="Foreground/default"/>
+                    </switch>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aLj-h4-bNT" customClass="SeperatorView" customModule="Development" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="49" width="351" height="1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="Kkh-hN-VTB"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="aLj-h4-bNT" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="6WE-Ff-Kyr"/>
+                <constraint firstAttribute="trailing" secondItem="aLj-h4-bNT" secondAttribute="trailing" id="Bcu-bo-STV"/>
+                <constraint firstAttribute="trailing" secondItem="Qw3-ty-fKS" secondAttribute="trailing" constant="16" id="RY2-jH-jBW"/>
+                <constraint firstItem="wPk-Kb-64x" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="Vq0-yT-YMA"/>
+                <constraint firstItem="Qw3-ty-fKS" firstAttribute="leading" secondItem="wPk-Kb-64x" secondAttribute="trailing" constant="8" symbolic="YES" id="ilq-Y0-Ojv"/>
+                <constraint firstItem="wPk-Kb-64x" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="j1x-p0-t7F"/>
+                <constraint firstItem="Qw3-ty-fKS" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="o3d-c9-8TB"/>
+                <constraint firstAttribute="bottom" secondItem="aLj-h4-bNT" secondAttribute="bottom" id="unn-It-oLa"/>
+            </constraints>
+            <size key="customSize" width="351" height="50"/>
+            <connections>
+                <outlet property="filterSwitch" destination="Qw3-ty-fKS" id="On2-k5-52D"/>
+                <outlet property="titleLabel" destination="wPk-Kb-64x" id="pff-1A-aNo"/>
+            </connections>
+            <point key="canvasLocation" x="368.70229007633588" y="0.0"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="Background/brand">
+            <color red="1" green="0.82745098039215681" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Foreground/default">
+            <color red="0.1803921568627451" green="0.13725490196078433" blue="0.074509803921568626" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

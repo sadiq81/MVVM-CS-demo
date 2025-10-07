@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Vælg addresse-->
+        <scene sceneID="BMJ-Sg-KDr">
+            <objects>
+                <viewController storyboardIdentifier="AddressSearchViewController" title="Vælg addresse" id="yEn-61-TAf" customClass="AddressSearchViewController" customModule="Development" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VNC-Ks-pZI">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="KnN-wB-CDD">
+                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="RK4-Ih-ww9">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                                <connections>
+                                    <outlet property="delegate" destination="yEn-61-TAf" id="ZxT-ET-bh3"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="sk3-wB-OkE"/>
+                        <color key="backgroundColor" name="background.default"/>
+                        <constraints>
+                            <constraint firstItem="sk3-wB-OkE" firstAttribute="bottom" secondItem="KnN-wB-CDD" secondAttribute="bottom" id="DBB-N3-sIl"/>
+                            <constraint firstItem="KnN-wB-CDD" firstAttribute="top" secondItem="sk3-wB-OkE" secondAttribute="top" id="c0y-gE-pIe"/>
+                            <constraint firstItem="sk3-wB-OkE" firstAttribute="trailing" secondItem="KnN-wB-CDD" secondAttribute="trailing" id="fDr-gZ-DL4"/>
+                            <constraint firstItem="KnN-wB-CDD" firstAttribute="leading" secondItem="sk3-wB-OkE" secondAttribute="leading" id="rj3-nu-gIM"/>
+                        </constraints>
+                    </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="collectionView" destination="KnN-wB-CDD" id="h7l-rk-n4t"/>
+                        <outlet property="searchBar" destination="5uE-ds-Oz0" id="2Zp-WV-XYA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x9c-Bu-Ilr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" placeholder="Fx Æblevej 36" id="5uE-ds-Oz0">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" textContentType="street-address"/>
+                    <connections>
+                        <outlet property="delegate" destination="yEn-61-TAf" id="FBG-vP-T33"/>
+                    </connections>
+                </searchBar>
+            </objects>
+            <point key="canvasLocation" x="801" y="-9"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="background.default">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21701"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProgressView" customModule="App" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="iN0-l3-epB" id="vSu-9v-b95"/>
+                <outlet property="statusProgress" destination="SQy-hZ-aeR" id="YT7-Ll-JmP"/>
+                <outlet property="statusWidthConstraint" destination="rUL-JR-r1X" id="H5a-YU-k0t"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="18"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nln-Wc-eOB" customClass="MView" customModule="MustacheUIKit">
+                    <rect key="frame" x="3" y="3" width="194" height="12"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="12" id="qvb-oC-Y65"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="6"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerUL" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerUR" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerLL" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerLR" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                </view>
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SQy-hZ-aeR" customClass="MView" customModule="MustacheUIKit">
+                    <rect key="frame" x="3" y="3" width="194" height="12"/>
+                    <color key="backgroundColor" name="Dark"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="12" id="DsA-OL-hGd"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="6"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerUL" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerUR" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerLL" value="YES"/>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="cornerLR" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="SQy-hZ-aeR" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="3" id="4YB-DO-Qe0"/>
+                <constraint firstAttribute="bottom" secondItem="SQy-hZ-aeR" secondAttribute="bottom" constant="3" id="7wh-C9-kHJ"/>
+                <constraint firstAttribute="trailing" secondItem="nln-Wc-eOB" secondAttribute="trailing" constant="3" id="JYk-WX-e8e"/>
+                <constraint firstItem="nln-Wc-eOB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="3" id="MWY-wh-AZj"/>
+                <constraint firstAttribute="bottom" secondItem="nln-Wc-eOB" secondAttribute="bottom" constant="3" id="Q6x-vt-26h"/>
+                <constraint firstItem="nln-Wc-eOB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="3" id="neB-mE-0ap"/>
+                <constraint firstItem="SQy-hZ-aeR" firstAttribute="width" secondItem="nln-Wc-eOB" secondAttribute="width" priority="999" id="rUL-JR-r1X"/>
+                <constraint firstItem="SQy-hZ-aeR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="3" id="vcO-vu-ctz"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="140" y="0.0"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="Dark">
+            <color red="0.11372549019607843" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

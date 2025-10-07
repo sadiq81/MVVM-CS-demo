@@ -1,0 +1,10 @@
+#include "Secrets/Production-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = App
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.production
+ENVIRONMENT_CONFIGURATION = production
+
+ENVIRONMENT_BACKEND_URL =  https:/$()/some-app.herokuapp.com/api/
+
+ENVIRONMENT_OPEN_ID_ISSUER_URL = https:/$()/netseidbroker.dk/op
