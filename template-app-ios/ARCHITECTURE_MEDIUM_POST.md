@@ -6,12 +6,12 @@
 
 ## Introduction
 
-I've wanted to write this post for several years now, so that i could share what I've learned and perhaps help someone build a better app. For full discloure, Claude.ai helped me get started writing this post by looking at the my example codebase, and I've then adjusted a lot of the text afterwards.
+I've wanted to write this post for several years to share what I've learned and help others build better apps. Full disclosure: Claude.ai helped me get started by analyzing my example codebase, though I've since heavily revised the text.
 
-Building maintainable iOS applications requires more than just writing code that works. It requires a resilient architecture that separates responsibilities, enables testability, and scales with your team. After years of iterating and refining my iOS architecture, I've settled on a proven combination (insert footnote here: 15+ apps and counting, more than 1 million daily users): **MVVM (Model-View-ViewModel) + Coordinator pattern with Service Dependency Injection**.
+Building maintainable iOS applications requires more than just writing code that works. It requires a resilient architecture that separates responsibilities, enables testability, and scales with your team. After years of iterating and refining my iOS architecture, I've settled on a proven combination (15+ apps and counting, more than 1 million daily users): **MVVM (Model-View-ViewModel) + Coordinator pattern with Service Dependency Injection**.
 
 In this article, I'll walk you through the complete architecture of a production iOS app, explaining how these patterns work together to create a maintainable, testable, and scalable codebase. 
-Some of you might say that this is not how MVVM or Coordinators should be implemented, but again this is my implemenation of the pattern. 
+Some of you might say that this is not how MVVM or Coordinators should be implemented, but again this is my implementation of the pattern. 
 
 **What you'll learn:**
 - How MVVM, Coordinators, and Services work together
@@ -32,7 +32,7 @@ Before diving into the solution, let's acknowledge the common pain points in iOS
 4. **State Management**: Difficulty managing and propagating state changes across the app
 5. **Testability**: Code that's hard to unit test due to tight coupling
 
-Sound familiar? Let's see how we can solve these issues.
+Sound familiar? Let's see how our architecture solves these issues.
 
 ---
 
@@ -63,7 +63,7 @@ Our architecture consists of three main layers:
 └─────────────────────────────────────────────────┘
 ```
 
-"High Level MVVMC.png"
+<img width="1460" height="1804" alt="High Level MVVMC" src="https://gist.github.com/user-attachments/assets/4c226551-a4d1-400f-85f6-744359ed9114" />
 
 ---
 
@@ -78,7 +78,7 @@ The Coordinator pattern moves navigation complexity by extracting all navigation
 Here's how the coordinator hierarchy works in practice:
 
 ```swift
-// Base protocol for all coordinators //https://github.com/mustachedk/mustache-ios-kit/blob/main/Sources/MustacheServices/Coordinator/CoordinatorType.swift 
+// Base protocol for all coordinators 
 public protocol CoordinatorType: NSObjectProtocol {    
     var baseController: UIViewController? { get }    
     func start() throws    
@@ -141,11 +141,9 @@ AppCoordinator (Root)
             └── OIDAuthorizationCoordinatorType
 ```
 
-What i learned down the way is the inversion of memory ownership, when i first started out experimenting with the coordinator pattern i keept running into memory leaks because of retain cycles, 
-it's important to look at the coordinators as something that lives besides UIKit, not on top or below. View controllers reference their coordinator so that when a flow is removed, the coordinator also gets deallocated.
+What I learned along the way is to invert the ownership relationship. When I first experimented with coordinators, I kept running into memory leaks from retain cycles. The key insight: coordinators live alongside UIKit, not above or below it. View controllers reference their coordinators strongly, so when a flow is removed, the coordinator deallocates naturally.
 
-So when do i create a new Coordinator? It really comes down to what feels natural, but as a rule of thumb its whenever you have a new UINavigationController that pushes controllers on its stack. Some coordinators can however reuse their parents
-navigation controller if it fits the navigation flow. 
+When to create a new Coordinator: As a rule of thumb, create a new coordinator whenever you introduce a new UINavigationController that manages a stack of view controllers. However, some coordinators can reuse their parent's navigation controller if it fits the navigation flow naturally.
 
 ### Key Benefits
 
@@ -160,7 +158,7 @@ navigation controller if it fits the navigation flow.
 
 ### ViewModel Protocol Pattern
 
-Every flow has at least one view model, some have more depending on their complexity. It comes down to what feels natural to seperate into distinct view models. In our pattern we can share the view model instances between several view controller, but all view controllers have a most one view model. This pattern lets us hold flow state in the view model and every view controller should be flow agnostic. So view models hold only flow and transient state. Keep that in mind for later.
+Every flow has at least one view model, some have more depending on their complexity. It comes down to what feels natural to separate into distinct view models. In our pattern we can share the view model instances between several view controller, but all view controllers have at most one view model. This pattern lets us hold flow state in the view model and every view controller should be flow agnostic. So view models hold only flow and transient state. Keep that in mind for later.
 
 ```swift
 protocol DashboardViewModelType {
@@ -248,14 +246,14 @@ class DashboardViewController: UIViewController {
 }
 ```
 
-"Data Flow.png"
+<img width="1853" height="1814" alt="Data flow" src="https://gist.github.com/user-attachments/assets/96a4c45b-8d2c-4307-883c-7aa54bfbeedb" />
 
 ---
 
 ## Service Layer: The Data Gatekeepers
 
 Services encapsulate all data operations—networking, parsing from network objects to model objects, persistence, business logic that isn't view-specific and wrapping 3rd party frameworks.
-Using services with observable properties makes it easier to keep the UI of all view controllers in memory up to data. When you update something one place, its reflected by all other listerners to the same service.
+Using services with observable properties keeps all view controllers' UI synchronized with the latest data. When you update something in one place, all listeners to that service automatically reflect the change.
 
 ### Service Protocol Pattern
 
@@ -370,7 +368,8 @@ extension Resolver: @retroactive ResolverRegistering {
 
 ---
 
-## Module Structure: Keeping Code Organized
+## Module Structure: 
+Code Organized
 
 The app is organized into numbered modules for clear hierarchy:
 
@@ -578,7 +577,7 @@ Let's trace a complete user action from input to UI update:
     }
 ```
 
-"Sequence flow.png"
+<img width="5031" height="4126" alt="Sequence flow" src="https://gist.github.com/user-attachments/assets/36c4ec9d-58ad-456d-8325-1a2d755608fd" />
 
 ---
 
@@ -669,7 +668,7 @@ Moving an existing app to this architecture? Here's how:
 
 ## Conclusion
 
-This architecture has served us well in production apps with teams of various sizes. It strikes a balance between structure and pragmatism, providing clear guidelines of where the responsibilites should lie.
+This architecture has served us well in production apps with teams of smaller sizes, 2-3 developers. It strikes a balance between structure and pragmatism, providing clear guidelines of where the responsibilites should lie.
 
 **Key Takeaways:**
 - **MVVM** separates presentation logic from views
@@ -688,7 +687,7 @@ The investment in setting up this architecture pays dividends as your app grows.
 
 ## Resources
 
-**Sample Code**: The complete implementation is available in the [repository](link-to-your-repo)
+**Sample Code**: The complete implementation is available in the [repository](https://github.com/sadiq81/MVVM-CS-demo)
 
 **Libraries Used**:
 - [Resolver](https://github.com/hmlongco/Resolver) - Dependency Injection

@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(find:*)",
-      "Bash(swift build)"
+      "Bash(swift build)",
+      "Bash(git push:*)",
+      "Read(//Users/th/.ssh/**)",
+      "Bash(ssh:*)",
+      "Bash(git remote set-url:*)"
     ],
     "deny": [],
     "ask": []
