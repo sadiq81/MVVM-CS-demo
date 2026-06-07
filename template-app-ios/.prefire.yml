@@ -1,0 +1,12 @@
+test_configuration:
+  preview_default_enabled: true
+  simulator_device: "iPhone 17 Pro"
+  snapshot_devices:
+    - "iPhone 17 Pro"
+  target: UIKit_Development
+  draw_hierarchy_in_key_window_default_enabled: true
+  imports:
+    - MustacheServices
+    - MustacheUIKit
+  sources:
+    - customerapp-UIKit/Sources/

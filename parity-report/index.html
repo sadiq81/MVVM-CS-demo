@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Template App — 3-Target Parity Report</title>
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">MVVM-CS Architecture Showcase · Parity Test Report</div>
+    <h1>Three Targets, One Behavior</h1>
+    <p class="subtitle">
+      Side-by-side functional parity comparison of the three Template App targets — Pure UIKit,
+      Mixed (UIKit&nbsp;+&nbsp;SwiftUI), and Pure SwiftUI — verifying they are 1:1 in functionality
+      while differing only in their intended architecture.
+    </p>
+
+    <div class="targets">
+      <div class="target-chip"><span class="dot uikit"></span>UIKit <small>· Pure UIKit</small></div>
+      <div class="target-chip"><span class="dot mixed"></span>Mixed <small>· UIKit + SwiftUI</small></div>
+      <div class="target-chip"><span class="dot swiftui"></span>SwiftUI <small>· Pure SwiftUI</small></div>
+    </div>
+
+    <div class="meta-row">
+      <span>Generated <b>2026-06-06</b></span>
+      <span>Modules <b>11</b></span>
+      <span>Method <b>Source comparison + build + preview snapshots</b></span>
+      <span>Screens captured <b>63 renders</b></span>
+      <span>Repo <b>template-app-ios</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- SUMMARY -->
+  <section id="summary" style="margin-top:40px;">
+    <div class="cards">
+      <div class="card green">
+        <div class="num">11 / 11</div>
+        <div class="lbl">Modules present &amp; aligned in all 3 targets</div>
+      </div>
+      <div class="card blue">
+        <div class="num">60</div>
+        <div class="lbl">Preview snapshots — every screen × 3 targets</div>
+      </div>
+      <div class="card green">
+        <div class="num">0</div>
+        <div class="lbl">Open functional gaps</div>
+      </div>
+      <div class="card blue">
+        <div class="num">3 / 3</div>
+        <div class="lbl">Schemes building (Dev)</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="badge ok">Aligned — 1:1 functional parity</span>
+      <span class="badge arch">Architectural — intentional difference</span>
+      <span class="badge naming">Naming — convention difference</span>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE AT A GLANCE -->
+  <section id="architecture">
+    <h2><span class="hash">A.</span> Architecture at a glance</h2>
+    <p class="section-note">
+      These differences are <strong>intentional</strong> — they are the entire point of the showcase.
+      They are <em>not</em> counted as misalignments anywhere in this report.
+    </p>
+
+    <div class="arch-grid">
+      <div class="head">Aspect</div>
+      <div class="head uikit">UIKit</div>
+      <div class="head mixed">Mixed</div>
+      <div class="head swiftui">SwiftUI</div>
+
+      <div class="rowlabel">Entry point</div>
+      <div class="cell"><code>AppDelegate</code></div>
+      <div class="cell"><code>AppDelegate</code></div>
+      <div class="cell"><code>@main App</code></div>
+
+      <div class="rowlabel">Navigation</div>
+      <div class="cell">UINavigationController + Coordinator</div>
+      <div class="cell">UINavigationController + Coordinator</div>
+      <div class="cell">NavigationStack + Destination / Navigator</div>
+
+      <div class="rowlabel">View layer</div>
+      <div class="cell">UIViewController + storyboard/XIB</div>
+      <div class="cell">SwiftUI via UIHostingController</div>
+      <div class="cell">Native SwiftUI views</div>
+
+      <div class="rowlabel">ViewModel convention</div>
+      <div class="cell">Protocol + impl <code>…ViewModelType</code></div>
+      <div class="cell">Concrete <code>…ViewModel</code></div>
+      <div class="cell">Concrete <code>…ViewModel</code></div>
+
+      <div class="rowlabel">DI</div>
+      <div class="cell">Factory <code>@Injected</code></div>
+      <div class="cell">Factory <code>@Injected</code> / <code>@InjectedObject</code></div>
+      <div class="cell">Factory <code>@InjectedObject</code></div>
+    </div>
+  </section>
+
+  <!-- MODULE MATRIX -->
+  <section id="modules">
+    <h2><span class="hash">B.</span> Module parity matrix</h2>
+    <p class="section-note">
+      Every module exists in all three targets with matching screens, data, and user flows.
+      The status reflects <em>functional</em> alignment only.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Feature / screens</th>
+            <th>Parity across targets</th>
+            <th class="status-cell">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="module">001 · Application</td>
+            <td class="feature">App startup &amp; root flow<span class="sub">Splash → Login → Onboarding → TabBar; logout clears services</span></td>
+            <td>Equivalent decision flow in all three. <span class="muted">Firebase configured in UIKit only.</span></td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+          <tr>
+            <td class="module">002 · TabBar</td>
+            <td class="feature">Tab shell<span class="sub">Dashboard · Search · Favorites · More</span></td>
+            <td>Same 4 tabs, same order at runtime in all three.</td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+          <tr>
+            <td class="module">003 · Common</td>
+            <td class="feature">Reusable UIKit primitives<span class="sub">HeaderCell, ProductCollectionViewCell, BackgroundDimmingViewController</span></td>
+            <td>UIKit-only. SwiftUI/Mixed compose these inline — no equivalent needed.</td>
+            <td><span class="badge arch">Architectural</span></td>
+          </tr>
+          <tr>
+            <td class="module">010 · Splash</td>
+            <td class="feature">Splash screen</td>
+            <td>Identical behavior. Type named <code>SplashScreenViewModelType</code> (UIKit/Mixed) vs <code>SplashViewModel</code> (SwiftUI).</td>
+            <td><span class="badge ok">Aligned</span> <span class="badge naming">Naming</span></td>
+          </tr>
+          <tr>
+            <td class="module">020 · Login</td>
+            <td class="feature">Login + Signup + Forgot Password<span class="sub">Validation, error alert, account creation, password reset</span></td>
+            <td>1:1 across targets — validation, login-failure alert, and password reset.</td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+          <tr>
+            <td class="module">030 · Onboarding</td>
+            <td class="feature">3-step permission flow<span class="sub">Location · Notification · Camera</span></td>
+            <td>1:1 across targets — 3-step permission flow.</td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+          <tr>
+            <td class="module">040 · Dashboard</td>
+            <td class="feature">5 content sections<span class="sub">User card · Comments · Posts · Albums · Todos</span></td>
+            <td>Identical sections, layout math, conditional rendering, and pull-to-refresh.</td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+          <tr>
+            <td class="module">050 · Search</td>
+            <td class="feature">Product search + Filter<span class="sub">Query, filter chips, filter sheet, results, detail nav</span></td>
+            <td>Full parity incl. chip selection state. UIKit uses a separate <code>FilterViewModelType</code>; Mixed/SwiftUI fold it into <code>ProductSearchViewModel</code>.</td>
+            <td><span class="badge ok">Aligned</span> <span class="badge arch">Architectural</span></td>
+          </tr>
+          <tr>
+            <td class="module">070 · Favorites</td>
+            <td class="feature">Favorites + Product Detail<span class="sub">A–M / N–Z segment, counts, toggle favorite, detail, empty state</span></td>
+            <td>Identical including shared <code>SegmentState</code> domain model. <code>ProductDetailsViewModel</code> vs <code>ProductDetailViewModel</code>.</td>
+            <td><span class="badge ok">Aligned</span> <span class="badge naming">Naming</span></td>
+          </tr>
+          <tr>
+            <td class="module">080 · More</td>
+            <td class="feature">More menu &amp; sub-screens<span class="sub">Profile · Password · Secret · Address Search · Country Picker · Birthday/Age (OAuth)</span></td>
+            <td>All screens present &amp; aligned in all three, incl. birthday validation. OID auth via Coordinator (UIKit/Mixed) vs ViewModel + SafariView (SwiftUI). <code>UserViewModelType</code> vs <code>UserProfileViewModel</code>.</td>
+            <td><span class="badge ok">Aligned</span> <span class="badge arch">Architectural</span> <span class="badge naming">Naming</span></td>
+          </tr>
+          <tr>
+            <td class="module">090 · Pin</td>
+            <td class="feature">PIN flows<span class="sub">Enroll · Validate · Change</span></td>
+            <td>1:1 across targets — Enroll · Validate · Change.</td>
+            <td><span class="badge ok">Aligned</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- BUILD VERIFICATION -->
+  <section id="builds">
+    <h2><span class="hash">C.</span> Build verification</h2>
+    <p class="section-note">
+      All three development schemes compiled successfully after the fixes
+      (<code>generic/platform=iOS Simulator</code>). Building requires the gitignored
+      <code>Secrets/*.xcconfig</code> stubs created by <code>ci_scripts/ci_post_clone/01_create_empty_secrets_file.sh</code>.
+    </p>
+    <div class="builds">
+      <div class="build"><div class="scheme">UIKit-Development</div><div class="result">BUILD SUCCEEDED</div></div>
+      <div class="build"><div class="scheme">Mixed-Development</div><div class="result">BUILD SUCCEEDED</div></div>
+      <div class="build"><div class="scheme">SwiftUI-Development</div><div class="result">BUILD SUCCEEDED</div></div>
+    </div>
+  </section>
+
+  <!-- NAMING CONVENTIONS -->
+  <section id="naming">
+    <h2><span class="hash">D.</span> Naming conventions</h2>
+    <p class="section-note">
+      The systematic naming differences between targets are <strong>intentional</strong> and follow from each target’s architecture:
+    </p>
+
+    <div class="arch-grid" style="grid-template-columns: 200px repeat(3, 1fr);">
+      <div class="head">Layer</div>
+      <div class="head uikit">UIKit</div>
+      <div class="head mixed">Mixed</div>
+      <div class="head swiftui">SwiftUI</div>
+
+      <div class="rowlabel">View models</div>
+      <div class="cell">Protocol + impl: <code>…ViewModelType</code></div>
+      <div class="cell">Concrete <code>…ViewModel</code></div>
+      <div class="cell">Concrete <code>…ViewModel</code></div>
+
+      <div class="rowlabel">Coordinators</div>
+      <div class="cell"><code>…Coordinator</code></div>
+      <div class="cell"><code>…Coordinator</code></div>
+      <div class="cell muted">— (path-based <code>…Destination</code>)</div>
+    </div>
+
+    <p class="section-note" style="margin-top:18px;">
+      <strong>View models</strong> — UIKit exposes each view model behind a <code>…ViewModelType</code> protocol (resolved via DI).
+      SwiftUI &amp; Mixed use concrete <code>…ViewModel</code> classes: SwiftUI’s <code>@ObservedObject</code> / <code>@StateObject</code> can’t be
+      backed by a protocol, so the <code>Type</code> suffix is intentionally UIKit-only.
+      <br><br>
+      <strong>Coordinators</strong> — now uniformly named <code>…Coordinator</code> (no <code>Type</code> suffix) across UIKit &amp; Mixed;
+      SwiftUI uses path-based <code>…Destination</code> routing instead of coordinators.
+    </p>
+  </section>
+
+  <section id="snapshots">
+<h2><span class="hash">E.</span> Visual snapshots — every screen, side by side</h2>
+<p class="section-note">Rendered from each target’s SwiftUI <code>#Preview</code>s / UIKit previews via <strong>EmergeTools SnapshotPreviews</strong> on iPhone&nbsp;17&nbsp;Pro (iOS&nbsp;26.1) with the mock <em>Preview</em> services — no backend or manual navigation. Each screen is shown for all three targets side by side.</p>
+<p class="shot-legend"><strong>60 / 60 screen renders</strong> — all 20 core screens render in all three targets. Splash is a full-screen video, so the static snapshot captures a decoded frame (UIKit) or the video’s dark background (Mixed/SwiftUI). Country Picker is a full-length list capped to one device screen.</p>
+<div class="shot-screen">
+<h3><span class="idx">01</span> Splash</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/splash__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/splash__uikit.png" alt="Splash — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/splash__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/splash__mixed.png" alt="Splash — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/splash__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/splash__swiftui.png" alt="Splash — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">02</span> Login</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/login__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/login__uikit.png" alt="Login — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/login__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/login__mixed.png" alt="Login — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/login__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/login__swiftui.png" alt="Login — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">03</span> Signup</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/signup__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/signup__uikit.png" alt="Signup — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/signup__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/signup__mixed.png" alt="Signup — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/signup__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/signup__swiftui.png" alt="Signup — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">04</span> Forgot Password</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/forgotpassword__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/forgotpassword__uikit.png" alt="Forgot Password — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/forgotpassword__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/forgotpassword__mixed.png" alt="Forgot Password — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/forgotpassword__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/forgotpassword__swiftui.png" alt="Forgot Password — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">05</span> Onboarding</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/onboarding__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/onboarding__uikit.png" alt="Onboarding — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/onboarding__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/onboarding__mixed.png" alt="Onboarding — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/onboarding__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/onboarding__swiftui.png" alt="Onboarding — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">06</span> Dashboard</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/dashboard__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/dashboard__uikit.png" alt="Dashboard — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/dashboard__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/dashboard__mixed.png" alt="Dashboard — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/dashboard__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/dashboard__swiftui.png" alt="Dashboard — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">07</span> Product Search</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/productsearch__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productsearch__uikit.png" alt="Product Search — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/productsearch__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productsearch__mixed.png" alt="Product Search — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/productsearch__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productsearch__swiftui.png" alt="Product Search — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">08</span> Filter Search</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/filtersearch__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/filtersearch__uikit.png" alt="Filter Search — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/filtersearch__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/filtersearch__mixed.png" alt="Filter Search — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/filtersearch__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/filtersearch__swiftui.png" alt="Filter Search — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">09</span> Favorites</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/favorites__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/favorites__uikit.png" alt="Favorites — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/favorites__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/favorites__mixed.png" alt="Favorites — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/favorites__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/favorites__swiftui.png" alt="Favorites — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">10</span> Product Detail</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/productdetail__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productdetail__uikit.png" alt="Product Detail — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/productdetail__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productdetail__mixed.png" alt="Product Detail — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/productdetail__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productdetail__swiftui.png" alt="Product Detail — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">11</span> More Menu</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/more__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/more__uikit.png" alt="More Menu — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/more__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/more__mixed.png" alt="More Menu — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/more__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/more__swiftui.png" alt="More Menu — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">12</span> User Profile</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/userprofile__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/userprofile__uikit.png" alt="User Profile — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/userprofile__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/userprofile__mixed.png" alt="User Profile — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/userprofile__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/userprofile__swiftui.png" alt="User Profile — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">13</span> Change Password</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/password__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/password__uikit.png" alt="Change Password — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/password__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/password__mixed.png" alt="Change Password — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/password__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/password__swiftui.png" alt="Change Password — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">14</span> Secret / Feature Flags</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/secret__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/secret__uikit.png" alt="Secret / Feature Flags — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/secret__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/secret__mixed.png" alt="Secret / Feature Flags — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/secret__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/secret__swiftui.png" alt="Secret / Feature Flags — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">15</span> Address Search</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/addresssearch__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/addresssearch__uikit.png" alt="Address Search — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/addresssearch__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/addresssearch__mixed.png" alt="Address Search — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/addresssearch__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/addresssearch__swiftui.png" alt="Address Search — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">16</span> Country Picker</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/countrypicker__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/countrypicker__uikit.png" alt="Country Picker — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/countrypicker__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/countrypicker__mixed.png" alt="Country Picker — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/countrypicker__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/countrypicker__swiftui.png" alt="Country Picker — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">17</span> PIN Enroll</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/pinenroll__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinenroll__uikit.png" alt="PIN Enroll — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/pinenroll__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinenroll__mixed.png" alt="PIN Enroll — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/pinenroll__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinenroll__swiftui.png" alt="PIN Enroll — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">18</span> PIN Validation</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/pinvalidation__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinvalidation__uikit.png" alt="PIN Validation — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/pinvalidation__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinvalidation__mixed.png" alt="PIN Validation — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/pinvalidation__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinvalidation__swiftui.png" alt="PIN Validation — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">19</span> PIN Change</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/pinchange__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinchange__uikit.png" alt="PIN Change — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/pinchange__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinchange__mixed.png" alt="PIN Change — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/pinchange__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pinchange__swiftui.png" alt="PIN Change — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">20</span> PIN Input (component)</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/pininput__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pininput__uikit.png" alt="PIN Input (component) — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/pininput__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pininput__mixed.png" alt="PIN Input (component) — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/pininput__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/pininput__swiftui.png" alt="PIN Input (component) — SwiftUI"></a>
+</div>
+</div></div>
+<div class="shot-screen">
+<h3><span class="idx">21</span> Tab Bar</h3>
+<div class="triptych">
+<div class="shot uikit">
+<div class="cap"><span class="dot uikit"></span>UIKit</div>
+<a class="frame" href="assets/shots/tabbar__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/tabbar__uikit.png" alt="Tab Bar — UIKit"></a>
+</div>
+<div class="shot mixed">
+<div class="cap"><span class="dot mixed"></span>Mixed</div>
+<a class="frame" href="assets/shots/tabbar__mixed.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/tabbar__mixed.png" alt="Tab Bar — Mixed"></a>
+</div>
+<div class="shot swiftui">
+<div class="cap"><span class="dot swiftui"></span>SwiftUI</div>
+<a class="frame" href="assets/shots/tabbar__swiftui.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/tabbar__swiftui.png" alt="Tab Bar — SwiftUI"></a>
+</div>
+</div></div>
+<h3 style="margin-top:40px;font-size:17px;">UIKit building blocks <span class="muted" style="font-weight:400;font-size:14px;">— reusable cells &amp; components (UIKit-only; SwiftUI composes these inline)</span></h3>
+<div class="comp-grid">
+<div class="comp"><a class="frame" href="assets/shots/addresssuggestioncell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/addresssuggestioncell__uikit.png" alt="addresssuggestioncell"></a><div class="name">addresssuggestioncell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/backgrounddimming__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/backgrounddimming__uikit.png" alt="backgrounddimming"></a><div class="name">backgrounddimming</div></div>
+<div class="comp"><a class="frame" href="assets/shots/headercell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/headercell__uikit.png" alt="headercell"></a><div class="name">headercell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/headerlabelreusable__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/headerlabelreusable__uikit.png" alt="headerlabelreusable"></a><div class="name">headerlabelreusable</div></div>
+<div class="comp"><a class="frame" href="assets/shots/onboardingcollectionviewcell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/onboardingcollectionviewcell__uikit.png" alt="onboardingcollectionviewcell"></a><div class="name">onboardingcollectionviewcell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/price__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/price__uikit.png" alt="price"></a><div class="name">price</div></div>
+<div class="comp"><a class="frame" href="assets/shots/productcollectionviewcell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productcollectionviewcell__uikit.png" alt="productcollectionviewcell"></a><div class="name">productcollectionviewcell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/productfiltercollectionviewcell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productfiltercollectionviewcell__uikit.png" alt="productfiltercollectionviewcell"></a><div class="name">productfiltercollectionviewcell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/productfiltertypecell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/productfiltertypecell__uikit.png" alt="productfiltertypecell"></a><div class="name">productfiltertypecell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/roundedcollectionviewcell__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/roundedcollectionviewcell__uikit.png" alt="roundedcollectionviewcell"></a><div class="name">roundedcollectionviewcell</div></div>
+<div class="comp"><a class="frame" href="assets/shots/uikitprogress__uikit.png" target="_blank" rel="noopener"><img loading="lazy" src="assets/shots/uikitprogress__uikit.png" alt="uikitprogress"></a><div class="name">uikitprogress</div></div>
+</div></section>
+
+  <footer>
+    Template App · MVVM-CS Architecture Showcase — parity report generated 2026-06-06.
+    Status reflects a clean build of all three development schemes and rendered previews of every screen.
+    Visual snapshots (section E) were rendered via EmergeTools SnapshotPreviews from each target’s previews. Naming conventions (section D) are intentional and follow each target’s architecture.
+  </footer>
+
+</div>
+</body>
+</html>

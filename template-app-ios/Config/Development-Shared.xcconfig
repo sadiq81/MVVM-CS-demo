@@ -1,0 +1,11 @@
+// Development-Shared.xcconfig
+// Common development environment settings shared across all apps
+#include "Common-Shared.xcconfig"
+
+// CHANGEME
+//ENVIRONMENT_BACKEND_URL = https:/$()/template-app-backend-fc1c4e09a4f3.herokuapp.com/api/
+ENVIRONMENT_BACKEND_URL = http:/$()/localhost:8080/api
+//ENVIRONMENT_BACKEND_URL = http:/$()/tsh.local:8080/api
+//ENVIRONMENT_BACKEND_URL = http:/$()/192.168.1.30:8080/api
+
+ENVIRONMENT_OPEN_ID_ISSUER_URL = https:/$()/pp.netseidbroker.dk/op

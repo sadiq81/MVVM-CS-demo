@@ -1,0 +1,7 @@
+#include "../../../Config/Development-Shared.xcconfig"
+#include "Secrets/SwiftUI-Development-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = SwiftUI-Dev
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.swiftui.development
+ENVIRONMENT_CONFIGURATION = development

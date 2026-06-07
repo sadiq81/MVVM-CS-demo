@@ -1,0 +1,38 @@
+strings:
+  inputs:
+    - Resources/Localization/Localizable.strings
+  filter: .+\.strings$
+  outputs:
+    - templateName: structured-swift5
+      output: Resources/Localization/Strings.swift
+      params:
+        enumName: Strings
+
+xcassets:
+  - inputs:
+      - Resources/Images/Images.xcassets
+    outputs:
+      - templateName: swift4
+        output: Resources/Images/Images.swift
+        params:
+          enumName: Images
+          imageAliasName: AssetImageTypeAlias
+  - inputs: Resources/Colors/Colors.xcassets
+    outputs:
+      - templateName: swift5
+        output: Resources/Colors/Colors.swift
+        params:
+          enumName: Colors
+
+fonts:
+  - inputs: Resources/Fonts
+    outputs:
+        templateName: swift4
+        output: Resources/Fonts/Fonts.swift
+
+files:
+  inputs: Resources/Files
+  filter: .+\.mp4$
+  outputs:
+    templateName: structured-swift5
+    output: Resources/Files/Files.swift

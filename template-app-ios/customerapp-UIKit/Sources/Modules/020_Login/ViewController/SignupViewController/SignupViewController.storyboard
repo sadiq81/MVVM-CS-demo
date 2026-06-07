@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Signup View Controller-->
+        <scene sceneID="SGN-sc-ene">
+            <objects>
+                <viewController storyboardIdentifier="SignupViewController" id="SGN-vc-001" customClass="SignupViewController" customModule="Development" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SGN-vw-001">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="never" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-sv-001">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-ct-001">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-st-001">
+                                                <rect key="frame" x="20" y="528" width="353" height="304"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="OPRET KONTO" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-tl-001">
+                                                        <rect key="frame" x="0.0" y="0.0" width="353" height="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Udfyld dine oplysninger for at oprette en konto." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-bl-001">
+                                                        <rect key="frame" x="0.0" y="25" width="353" height="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-fnc-01" customClass="MView" customModule="MustacheUIKit">
+                                                        <rect key="frame" x="0.0" y="50" width="353" height="44"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Fulde navn" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-fnt-01">
+                                                                <rect key="frame" x="20" y="0.0" width="313" height="44"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="44" id="SGN-fnh-01"/>
+                                                                </constraints>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="words" textContentType="name"/>
+                                                                <connections>
+                                                                    <action selector="editingDidEndOnExit:" destination="SGN-vc-001" eventType="editingDidEndOnExit" id="SGN-fna-01"/>
+                                                                </connections>
+                                                            </textField>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="SGN-fnt-01" firstAttribute="leading" secondItem="SGN-fnc-01" secondAttribute="leading" constant="20" symbolic="YES" id="SGN-fnl-01"/>
+                                                            <constraint firstAttribute="bottom" secondItem="SGN-fnt-01" secondAttribute="bottom" id="SGN-fnb-01"/>
+                                                            <constraint firstItem="SGN-fnt-01" firstAttribute="top" secondItem="SGN-fnc-01" secondAttribute="top" id="SGN-fnt-tc"/>
+                                                            <constraint firstAttribute="trailing" secondItem="SGN-fnt-01" secondAttribute="trailing" constant="20" symbolic="YES" id="SGN-fntr-1"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-emc-01" customClass="MView" customModule="MustacheUIKit">
+                                                        <rect key="frame" x="0.0" y="102" width="353" height="44"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-emt-01">
+                                                                <rect key="frame" x="20" y="0.0" width="313" height="44"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="44" id="SGN-emh-01"/>
+                                                                </constraints>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="none" keyboardType="emailAddress" textContentType="username"/>
+                                                                <connections>
+                                                                    <action selector="editingDidEndOnExit:" destination="SGN-vc-001" eventType="editingDidEndOnExit" id="SGN-ema-01"/>
+                                                                </connections>
+                                                            </textField>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="SGN-emt-01" firstAttribute="leading" secondItem="SGN-emc-01" secondAttribute="leading" constant="20" symbolic="YES" id="SGN-eml-01"/>
+                                                            <constraint firstAttribute="bottom" secondItem="SGN-emt-01" secondAttribute="bottom" id="SGN-emb-01"/>
+                                                            <constraint firstItem="SGN-emt-01" firstAttribute="top" secondItem="SGN-emc-01" secondAttribute="top" id="SGN-emt-tc"/>
+                                                            <constraint firstAttribute="trailing" secondItem="SGN-emt-01" secondAttribute="trailing" constant="20" symbolic="YES" id="SGN-emtr-1"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-pwc-01" customClass="MView" customModule="MustacheUIKit">
+                                                        <rect key="frame" x="0.0" y="154" width="353" height="44"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Adgangskode" minimumFontSize="17" clearButtonMode="always" secureTextEntry="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-pwt-01">
+                                                                <rect key="frame" x="20" y="0.0" width="313" height="44"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="44" id="SGN-pwh-01"/>
+                                                                </constraints>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="none" textContentType="password" secureTextEntry="YES"/>
+                                                                <connections>
+                                                                    <action selector="editingDidEndOnExit:" destination="SGN-vc-001" eventType="editingDidEndOnExit" id="SGN-pwa-01"/>
+                                                                </connections>
+                                                            </textField>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="SGN-pwt-01" firstAttribute="leading" secondItem="SGN-pwc-01" secondAttribute="leading" constant="20" symbolic="YES" id="SGN-pwl-01"/>
+                                                            <constraint firstAttribute="bottom" secondItem="SGN-pwt-01" secondAttribute="bottom" id="SGN-pwb-01"/>
+                                                            <constraint firstItem="SGN-pwt-01" firstAttribute="top" secondItem="SGN-pwc-01" secondAttribute="top" id="SGN-pwt-tc"/>
+                                                            <constraint firstAttribute="trailing" secondItem="SGN-pwt-01" secondAttribute="trailing" constant="20" symbolic="YES" id="SGN-pwtr-1"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-cfc-01" customClass="MView" customModule="MustacheUIKit">
+                                                        <rect key="frame" x="0.0" y="206" width="353" height="44"/>
+                                                        <subviews>
+                                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Gentag adgangskode" minimumFontSize="17" clearButtonMode="always" secureTextEntry="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-cft-01">
+                                                                <rect key="frame" x="20" y="0.0" width="313" height="44"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="44" id="SGN-cfh-01"/>
+                                                                </constraints>
+                                                                <textInputTraits key="textInputTraits" autocapitalizationType="none" textContentType="password" secureTextEntry="YES"/>
+                                                                <connections>
+                                                                    <action selector="editingDidEndOnExit:" destination="SGN-vc-001" eventType="editingDidEndOnExit" id="SGN-cfa-01"/>
+                                                                </connections>
+                                                            </textField>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="SGN-cft-01" firstAttribute="leading" secondItem="SGN-cfc-01" secondAttribute="leading" constant="20" symbolic="YES" id="SGN-cfl-01"/>
+                                                            <constraint firstAttribute="bottom" secondItem="SGN-cft-01" secondAttribute="bottom" id="SGN-cfb-01"/>
+                                                            <constraint firstItem="SGN-cft-01" firstAttribute="top" secondItem="SGN-cfc-01" secondAttribute="top" id="SGN-cft-tc"/>
+                                                            <constraint firstAttribute="trailing" secondItem="SGN-cft-01" secondAttribute="trailing" constant="20" symbolic="YES" id="SGN-cftr-1"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SGN-btn-01">
+                                                        <rect key="frame" x="0.0" y="258" width="353" height="56"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="56" id="SGN-bth-01"/>
+                                                        </constraints>
+                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                        <state key="normal" title="OPRET KONTO"/>
+                                                        <connections>
+                                                            <action selector="signup" destination="SGN-vc-001" eventType="touchUpInside" id="SGN-bta-01"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="SGN-st-001" secondAttribute="bottom" constant="20" symbolic="YES" id="SGN-stb-01"/>
+                                            <constraint firstItem="SGN-st-001" firstAttribute="leading" secondItem="SGN-ct-001" secondAttribute="leading" constant="20" symbolic="YES" id="SGN-stl-01"/>
+                                            <constraint firstAttribute="trailing" secondItem="SGN-st-001" secondAttribute="trailing" constant="20" symbolic="YES" id="SGN-str-01"/>
+                                            <constraint firstItem="SGN-st-001" firstAttribute="top" relation="greaterThanOrEqual" secondItem="SGN-ct-001" secondAttribute="top" constant="20" symbolic="YES" id="SGN-stt-01"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="SGN-ct-001" secondAttribute="trailing" id="SGN-ctr-01"/>
+                                    <constraint firstItem="SGN-ct-001" firstAttribute="width" secondItem="SGN-sv-001" secondAttribute="width" id="SGN-ctw-01"/>
+                                    <constraint firstItem="SGN-ct-001" firstAttribute="height" secondItem="SGN-sv-001" secondAttribute="height" priority="250" id="SGN-cth-01"/>
+                                    <constraint firstItem="SGN-ct-001" firstAttribute="leading" secondItem="SGN-sv-001" secondAttribute="leading" id="SGN-ctl-01"/>
+                                    <constraint firstItem="SGN-ct-001" firstAttribute="top" secondItem="SGN-sv-001" secondAttribute="top" id="SGN-ctt-01"/>
+                                    <constraint firstAttribute="bottom" secondItem="SGN-ct-001" secondAttribute="bottom" placeholder="YES" id="SGN-ctbm-1"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="SGN-sa-001"/>
+                        <constraints>
+                            <constraint firstItem="SGN-sv-001" firstAttribute="leading" secondItem="SGN-vw-001" secondAttribute="leading" id="SGN-svl-01"/>
+                            <constraint firstItem="SGN-sv-001" firstAttribute="top" secondItem="SGN-vw-001" secondAttribute="top" id="SGN-svt-01"/>
+                            <constraint firstAttribute="trailing" secondItem="SGN-sv-001" secondAttribute="trailing" id="SGN-svr-01"/>
+                            <constraint firstItem="SGN-sv-001" firstAttribute="bottom" secondItem="SGN-vw-001" secondAttribute="bottom" placeholder="YES" id="SGN-svb-01"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bodyLabel" destination="SGN-bl-001" id="SGN-o-body"/>
+                        <outlet property="confirmPasswordContainerView" destination="SGN-cfc-01" id="SGN-o-cfc"/>
+                        <outlet property="confirmPasswordTextField" destination="SGN-cft-01" id="SGN-o-cft"/>
+                        <outlet property="emailContainerView" destination="SGN-emc-01" id="SGN-o-emc"/>
+                        <outlet property="emailTextField" destination="SGN-emt-01" id="SGN-o-emt"/>
+                        <outlet property="fullNameContainerView" destination="SGN-fnc-01" id="SGN-o-fnc"/>
+                        <outlet property="fullNameTextField" destination="SGN-fnt-01" id="SGN-o-fnt"/>
+                        <outlet property="passwordContainerView" destination="SGN-pwc-01" id="SGN-o-pwc"/>
+                        <outlet property="passwordTextField" destination="SGN-pwt-01" id="SGN-o-pwt"/>
+                        <outlet property="scrollView" destination="SGN-sv-001" id="SGN-o-sv"/>
+                        <outlet property="signupButton" destination="SGN-btn-01" id="SGN-o-btn"/>
+                        <outlet property="titleLabel" destination="SGN-tl-001" id="SGN-o-title"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SGN-fr-001" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="973.6" y="-2.2"/>
+        </scene>
+    </scenes>
+</document>

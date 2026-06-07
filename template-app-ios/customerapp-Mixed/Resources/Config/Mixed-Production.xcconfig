@@ -1,0 +1,7 @@
+#include "../../../Config/Production-Shared.xcconfig"
+#include "Secrets/Mixed-Production-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = Mixed
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.mixed.production
+ENVIRONMENT_CONFIGURATION = production

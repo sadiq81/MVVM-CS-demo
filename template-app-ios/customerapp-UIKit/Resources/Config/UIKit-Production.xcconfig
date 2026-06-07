@@ -1,0 +1,7 @@
+#include "../../../Config/Production-Shared.xcconfig"
+#include "Secrets/UIKit-Production-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = UIKit
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.uikit.production
+ENVIRONMENT_CONFIGURATION = production

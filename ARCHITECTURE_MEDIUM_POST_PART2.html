@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MVVM-CS Part 2</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 740px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #292929; font-size: 18px; }
+  h1 { font-size: 32px; font-weight: bold; margin-top: 40px; }
+  h2 { font-size: 24px; font-weight: bold; margin-top: 40px; border-bottom: none; }
+  h3 { font-size: 20px; font-weight: bold; margin-top: 30px; }
+  pre { background: #f5f5f5; padding: 20px; overflow-x: auto; border-radius: 4px; font-size: 14px; line-height: 1.5; }
+  code { font-family: Menlo, Monaco, monospace; font-size: 14px; }
+  p code, li code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+  pre code { background: none; padding: 0; }
+  blockquote { border-left: 3px solid #ccc; margin-left: 0; padding-left: 20px; color: #666; }
+  a { color: #1a8917; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; font-size: 14px; }
+  th { background: #f5f5f5; font-weight: bold; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+  ul, ol { padding-left: 30px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<h1 id="mvvm-cs-architecture-for-ios-part-2-bridging-uikit-and-swiftui">MVVM-CS Architecture for iOS: Part 2 Bridging UIKit and SwiftUI</h1>
+<p><strong>Tommy Sadiq Hinrichsen</strong> | <a href="https://medium.com/@tommysadiqhinrichsen">@tommysadiqhinrichsen</a></p>
+<hr>
+<p>In <a href="https://medium.com/@tommysadiqhinrichsen/building-scalable-ios-apps-a-modern-mvvm-coordinator-architecture-with-service-dependency-7ecf18c269ac">Part 1</a> we built a full iOS app with MVVM-CS and pure UIKit, coordinators on top of <code>UINavigationController</code>, view models publishing through Combine, storyboard-based view controllers, all of it stitched together with dependency injection.</p>
+<p>That architecture holds up. It scales. But sooner or later you want to write SwiftUI, and then a question lands on the table: <strong>how do you bring SwiftUI views into a UIKit navigation stack while keeping the coordinator layer you already have?</strong></p>
+<p>That is exactly what the Mixed app (<code>customerapp-Mixed</code>) solves. It keeps everything from Part 1, the UIKit lifecycle, the navigation stack, the coordinator tree. It swaps out just the view layer. Every <code>UIViewController</code> becomes a SwiftUI <code>View</code> wrapped in <code>UIHostingController</code>. Screen by screen, switch between UIKit or SwiftUI depending on the task at hand.</p>
+<h2 id="the-bridge-architecture">The Bridge Architecture</h2>
+<p>Three pieces of Apple&#39;s UI stack come together in the Mixed app:</p>
+<ol>
+<li><strong>UIKit lifecycle</strong> <code>AppDelegate</code> still runs the show at startup</li>
+<li><strong>UIKit navigation</strong> <code>UINavigationController</code> and <code>UITabBarController</code> still own the view hierarchy</li>
+<li><strong>SwiftUI views</strong> every viewcontroller is replacted with a <code>View</code>, hosted inside a <code>UIHostingController</code></li>
+</ol>
+<p>The entry point hasn&#39;t changed at all from Part 1:</p>
+<pre><code class="language-swift">@main
+final class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+    var coordinator: AppCoordinator?
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.coordinator = AppCoordinator(window: self.window!)
+        try? self.coordinator?.start()
+        return true
+    }
+}
+</code></pre>
+<p><code>AppCoordinator</code> creates the window, builds the coordinator tree and handles top-level transitions. Identical to the UIKit app. The differences only show up once child coordinators start presenting views.</p>
+<h2 id="hostingcoordinator-the-key-bridge">HostingCoordinator: The Key Bridge</h2>
+<p>The whole Mixed architecture is made possible by one new class: <code>HostingCoordinator</code>. We need it because SwiftUI still doesn&#39;t let you use protocols as environment objects, so we wrap the coordinator in a concrete <code>ObservableObject</code> instead.</p>
+<p><code>HostingCoordinator</code> takes any <code>CoordinatorType</code> and exposes its <code>transition(to:)</code> method through <code>@EnvironmentObject</code> injection. That one wrapper is enough for SwiftUI views to trigger UIKit-style navigation without ever touching <code>UINavigationController</code>, <code>UITabBarController</code>, <code>UIHostingController</code>, or the coordinator pattern itself. Separation of concerns stays clean.</p>
+<p>From a SwiftUI view, kicking off a navigation looks like this:</p>
+<pre><code class="language-swift">struct MoreView: View {
+
+    @EnvironmentObject
+    private var coordinator: HostingCoordinator
+
+    var body: some View {
+        List {
+            Button {
+                try? self.coordinator.transition(to: MoreTransition.profile)
+            } label: {
+                Text(&quot;Profile&quot;)
+            }
+        }
+    }
+}
+</code></pre>
+<p>The view has no idea that behind that call, a UIKit coordinator is about to create a <code>UIHostingController</code> and push it onto a <code>UINavigationController</code>. All it does is ask for a transition by name.</p>
+<p>On the coordinator side, the wiring is just as simple. Every coordinator wraps its SwiftUI view in a <code>HostingCoordinator</code> environment object and hands it off to <code>UIHostingController</code>:</p>
+<pre><code class="language-swift">func start() throws {
+    let moreView = MoreView()
+        .environmentObject(HostingCoordinator(coordinator: self))
+    let controller = UIHostingController(rootView: moreView)
+    self.navigationController?.setViewControllers([controller], animated: false)
+}
+</code></pre>
+<p>You&#39;ll see this pattern everywhere in the Mixed app. The coordinator holds a weak reference to the navigation controller. The SwiftUI view manages its own state. <code>HostingCoordinator</code> sits in the middle, forwarding transition calls from the declarative world into the imperative one.</p>
+<h2 id="coordinators-same-pattern-different-views">Coordinators: Same Pattern, Different Views</h2>
+<p>Structurally, the coordinator hierarchy is unchanged from Part 1. <code>TabBarCoordinator</code> still creates a <code>UITabBarController</code> with one <code>UINavigationController</code> per tab:</p>
+<pre><code class="language-swift">final class TabBarCoordinator: NSObject, CoordinatorType {
+
+    var baseController: UIViewController? { self.tabBarController }
+
+    let tabBarController: UITabBarController
+    weak var parent: (any CoordinatorType)?
+
+    var children = NSHashTable&lt;AnyObject&gt;.weakObjects()
+
+    init(parent: any CoordinatorType) {
+        self.parent = parent
+        self.tabBarController = UITabBarController()
+        super.init()
+    }
+
+    func start() throws {
+        // Dashboard tab
+        let dashboardNavController = UINavigationController()
+        let dashboardCoordinator = DashboardCoordinator(parent: self, navigationController: dashboardNavController)
+        self.children.add(dashboardCoordinator)
+        try dashboardCoordinator.start()
+
+        // Search tab
+        let searchNavController = UINavigationController()
+        let searchCoordinator = SearchProductsCoordinator(parent: self, navigationController: searchNavController)
+        self.children.add(searchCoordinator)
+        try searchCoordinator.start()
+
+        // ... Favorites tab, More tab follow the same pattern
+
+        self.tabBarController.viewControllers = [
+            dashboardNavController,
+            searchNavController,
+            favoritesNavController,
+            moreNavController
+        ]
+    }
+}
+</code></pre>
+<p>Each child coordinator gets a <code>UINavigationController</code> and pushes SwiftUI views wrapped in <code>UIHostingController</code>. The parent-child relationships, the <code>children</code> hash table with weak references, the <code>Completion</code> protocol for child-to-parent communication, none of that has changed.</p>
+<h2 id="transition-flow-from-tap-to-push">Transition Flow: From Tap to Push</h2>
+<p>Let&#39;s trace what happens when a user taps &quot;Profile&quot; in the More tab.</p>
+<p>The SwiftUI <code>MoreView</code> calls <code>coordinator.transition(to: MoreTransition.profile)</code>. That call hits the <code>HostingCoordinator</code> (injected as <code>@EnvironmentObject</code>), which forwards it straight to the underlying <code>MoreCoordinator</code>. The coordinator matches on <code>.profile</code> and does what coordinators do:</p>
+<pre><code class="language-swift">func transition(to transition: MustacheServices.Transition) throws {
+    if let transition = transition as? MoreTransition {
+        switch transition {
+            case .profile:
+                let view = UserProfileView()
+                    .environmentObject(HostingCoordinator(coordinator: self))
+                let controller = UIHostingController(rootView: view)
+                self.navigationController?.pushViewController(controller, animated: true)
+
+            case .password:
+                let view = PasswordView()
+                    .environmentObject(HostingCoordinator(coordinator: self))
+                let controller = UIHostingController(rootView: view)
+                self.navigationController?.pushViewController(controller, animated: true)
+
+            case .pop:
+                self.navigationController?.popViewController(animated: true)
+        }
+    }
+}
+</code></pre>
+<p>A new <code>UIHostingController</code> wrapping <code>UserProfileView</code> gets pushed onto the tab&#39;s navigation stack. The user sees a standard iOS push animation with a back button, because the navigation stack is real UIKit underneath.</p>
+<p>Notice that the pushed view also gets a <code>HostingCoordinator</code> environment object pointing to the same coordinator. So <code>UserProfileView</code> can trigger further transitions too, navigate to the password screen, pop back, whatever <code>MoreTransition</code> defines.</p>
+<p>Modal presentation works the same way. In the search coordinator, showing a filter screen just uses <code>present</code> instead of <code>push</code>:</p>
+<pre><code class="language-swift">case .filter(let filterType):
+    let viewModel = Container.shared.filterSearchViewModel()
+    viewModel.filterType = filterType
+    let controller = FilterSearchView().hosted(by: self)
+    
+    let navController = UINavigationController(rootViewController: controller)
+    self.navigationController?.present(navController, animated: true)
+</code></pre>
+<p>Push, present, pop, dismiss, standard <code>UINavigationController</code> operations. The SwiftUI views never need to know which one is being used.</p>
+<h2 id="swiftui-viewmodels-direct-observableobject">SwiftUI ViewModels: Direct ObservableObject</h2>
+<p>In the UIKit app, ViewModels hide behind protocols (<code>ProductSearchViewModelType</code>) and talk to the view layer through Combine publishers. For SwiftUI we skip that indirection. The ViewModel itself <em>is</em> the <code>ObservableObject</code>, with <code>@Published</code> properties that SwiftUI can observe directly:</p>
+<pre><code class="language-swift">@MainActor
+final class ProductSearchViewModel: ObservableObject {
+
+    @Published var searchText: String = &quot;&quot;
+    @Published var searchResults: ProductSearchResult?
+    @Published var isLoading = false
+    @Published var selectedBrands: [any ProductFilter] = []
+    @Published var selectedCategories: [any ProductFilter] = []
+
+    ....
+
+    @Injected(\.productService)
+    private var productService: any ProductServiceType
+
+    @Injected(\.filtersService)
+    private var filterService: any FiltersServiceType
+
+    private var cancellables = Set&lt;AnyCancellable&gt;()
+
+    init() {
+        self.$searchText
+            .removeDuplicates()
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] text in
+                self?.internalSearchText = text
+            }
+            .store(in: &amp;self.cancellables)
+
+        // Subscribe to filter service changes...
+    }
+}
+</code></pre>
+<p>Services get resolved through <code>@Injected(\.productService)</code> from the Factory <code>Container</code> (more on that below). Combine subscriptions to service-level publishers happen internally, and the results bubble up as <code>@Published</code> properties that SwiftUI binds to.</p>
+<p>On the view side, <code>@InjectedObject</code> resolves the ViewModel from the Container and manages its lifecycle the same way <code>@StateObject</code> would:</p>
+<pre><code class="language-swift">struct ProductSearchView: View {
+
+    @EnvironmentObject
+    private var coordinator: HostingCoordinator
+
+    @InjectedObject(\.productSearchViewModel)
+    private var viewModel
+
+    var body: some View {
+        VStack(spacing: 0) {
+            searchAndFilterBar
+            productList
+        }
+    }
+}
+</code></pre>
+<p>No ViewState adapter, no extra layer between Combine and SwiftUI. The ViewModel owns its subscriptions, exposes <code>@Published</code> state, and SwiftUI watches it directly. When you eventually move to <code>@Observable</code> (iOS 17+), you swap out the <code>ObservableObject</code> conformance without touching views or coordinators.</p>
+<h2 id="what-changes-vs-pure-uikit">What Changes vs. Pure UIKit</h2>
+<p>Here&#39;s a clear breakdown of what stays and what moves when going from the UIKit app to the Mixed app:</p>
+<p><strong>Unchanged:</strong></p>
+<ul>
+<li><code>AppDelegate</code> entry point</li>
+<li><code>UINavigationController</code> and <code>UITabBarController</code> navigation</li>
+<li>Coordinator hierarchy (parent-child, <code>NSHashTable</code> children, <code>Completion</code> protocol)</li>
+<li>Transition enums (<code>AppTransition</code>, <code>LoginTransition</code>, <code>MoreTransition</code>, etc.)</li>
+<li>Service layer and shared Container registrations</li>
+<li>Numbered module folder structure</li>
+</ul>
+<p><strong>Changed:</strong></p>
+<ul>
+<li><code>UIViewController</code> subclasses become SwiftUI <code>View</code> structs</li>
+<li>Storyboards and XIBs are gone entirely</li>
+<li>Coordinators push <code>UIHostingController</code> instead of <code>UIViewController</code></li>
+<li><code>HostingCoordinator</code> is injected as <code>@EnvironmentObject</code> for navigation</li>
+<li>ViewModels become direct <code>ObservableObject</code> classes with <code>@Published</code> properties</li>
+</ul>
+<p><strong>Added:</strong></p>
+<ul>
+<li><code>HostingCoordinator</code> environment object injection in every <code>start()</code> and <code>transition(to:)</code></li>
+<li>SwiftUI ViewModel classes (direct <code>ObservableObject</code>, no adapter); the ones that are byte-identical with the pure SwiftUI app live in <code>Shared-SwiftUI/</code></li>
+</ul>
+<h2 id="shared-code-architecture">Shared Code Architecture</h2>
+<p>The project splits shared code across two top-level folders, each mapped to a different set of targets through Xcode&#39;s file-system-synchronized groups:</p>
+<pre><code>Shared/                        # Compiled into ALL 3 apps (UIKit, Mixed, SwiftUI)
+└── Sources/
+    ├── Models/                #   Domain models (Product, User, Dashboard, …) + mocks
+    ├── Services/              #   Protocol + implementation pairs (*ServiceType)
+    │   └── Preview/           #   Preview service stubs for SwiftUI previews
+    ├── Networking/            #   Endpoints, Requests, Responses
+    ├── Extensions/            #   Foundation / UIKit / AppAuth / Factory extensions
+    │   └── Factory/           #   Shared DI registrations (Container+Services)
+    ├── DesignSystem/          #   Cross-app appearance, fonts, constants
+    └── Modules/               #   Shared domain types (e.g. SegmentState)
+
+Shared-SwiftUI/                # Compiled into Mixed + SwiftUI only
+└── Sources/
+    ├── DesignSystem/          #   SwiftUI font extensions, view modifiers
+    └── Modules/               #   Byte-identical SwiftUI views + ViewModels
+</code></pre>
+<p><code>Shared/</code> holds everything that doesn&#39;t depend on a particular UI flavour: models, services, networking, the cross-app design system, and the shared Factory <code>Container</code> service registrations. Every target compiles it (all six — Dev and Prod per app).</p>
+<p><code>Shared-SwiftUI/</code> holds the SwiftUI code that the Mixed and pure SwiftUI apps can compile <em>unchanged</em> — files that came out byte-for-byte identical, such as <code>VideoPlayerView</code>, <code>PinInputView</code>, <code>SecretView</code>, and a handful of presentation-only ViewModels. Views whose navigation wiring differs between the two apps (Mixed routes through <code>HostingCoordinator</code>, pure SwiftUI through the navigator — more on that in Part 3) stay in each app&#39;s own target. Xcode file membership, not symlinks, decides what compiles where.</p>
+<p>The coordinator files barely change either. Compare <code>SearchProductsCoordinator.start()</code> from the UIKit app:</p>
+<pre><code class="language-swift">// UIKit: pushes a UIViewController loaded from storyboard
+func start() throws {
+    let controller = AppStoryboard.viewController(class: ProductSearchViewController.self)
+    controller.coordinator = self
+    self.navigationController?.setViewControllers([controller], animated: false)
+}
+</code></pre>
+<p>With the Mixed version:</p>
+<pre><code class="language-swift">// Mixed: pushes a UIHostingController wrapping a SwiftUI view
+func start() throws {
+    let searchView = ProductSearchView()
+        .environmentObject(HostingCoordinator(coordinator: self))
+    let controller = UIHostingController(rootView: searchView)
+    self.navigationController?.setViewControllers([controller], animated: false)
+}
+</code></pre>
+<p>Three lines, same shape, different view technology. The navigation controller doesn&#39;t care what kind of <code>UIViewController</code> it&#39;s pushing.</p>
+<h2 id="dependency-injection-factory-container">Dependency Injection: Factory Container</h2>
+<p>All apps use the <strong>Factory</strong> pattern from MustacheServices for dependency injection. Services live in shared <code>Container</code> extensions; ViewModels are registered per-app.</p>
+<p><strong>Shared services</strong> (compiled into all apps) in <code>Shared/Sources/Extensions/Factory/Container+Services.swift</code>:</p>
+<pre><code class="language-swift">extension Container {
+
+    var loginService: Factory&lt;any LoginServiceType&gt; {
+        self { LoginService() }
+    }
+
+    var dashboardService: Factory&lt;any DashboardServiceType&gt; {
+        self { DashboardService() }
+    }
+
+    var productService: Factory&lt;any ProductServiceType&gt; {
+        self { ProductService() }
+    }
+
+    // ...
+}
+</code></pre>
+<p><strong>UIKit ViewModels</strong> in <code>customerapp-UIKit/Sources/Extensions/Container/Container+ViewModels.swift</code>:</p>
+<pre><code class="language-swift">extension Container {
+
+    var dashboardViewModelType: Factory&lt;any DashboardViewModelType&gt; {
+        self { MainActor.assumeIsolated { DashboardViewModel() } }.shared
+    }
+
+    var favoritesViewModelType: Factory&lt;any FavoritesViewModelType&gt; {
+        self { MainActor.assumeIsolated { FavoritesViewModel() } }.shared
+    }
+}
+</code></pre>
+<p><strong>SwiftUI ViewModels</strong> in <code>customerapp-Mixed/Sources/Extensions/Factory/Container+ViewModels.swift</code>:</p>
+<pre><code class="language-swift">extension Container {
+
+    var favoritesViewModel: Factory&lt;FavoritesViewModel&gt; {
+        self { MainActor.assumeIsolated { FavoritesViewModel() } }.shared
+    }
+
+    var dashboardViewModel: Factory&lt;DashboardViewModel&gt; {
+        self { MainActor.assumeIsolated { DashboardViewModel() } }.shared
+    }
+}
+</code></pre>
+<p>There&#39;s a deliberate difference here. UIKit ViewModel registrations use <strong>protocol types</strong> (<code>any DashboardViewModelType</code>). SwiftUI registrations use <strong>concrete types</strong> (<code>DashboardViewModel</code>), because <code>@InjectedObject</code> manages the lifecycle the way <code>@StateObject</code> does and SwiftUI can&#39;t observe a <code>some ObservableObject</code> behind an existential. ViewModels that need model data — a product detail screen, a PIN screen — register as a <code>ParameterFactory</code> instead, so the coordinator passes the value in at resolve time.</p>
+<p>Two property wrappers handle all injection:</p>
+<ul>
+<li><code>@Injected(\.productService)</code> for services (non-observable)</li>
+<li><code>@InjectedObject(\.favoritesViewModel)</code> for SwiftUI <code>ObservableObject</code> ViewModels</li>
+</ul>
+<h2 id="the-app-level-flow">The App-Level Flow</h2>
+<p>To see how it all fits, here&#39;s the full navigation flow from app launch:</p>
+<ol>
+<li><code>AppDelegate</code> creates <code>AppCoordinator</code> with the window</li>
+<li><code>AppCoordinator.start()</code> wraps <code>SplashView</code> in <code>UIHostingController</code> and sets it as root</li>
+<li>After splash, <code>AppCoordinator.transition(to: .splashCompleted)</code> checks auth state</li>
+<li>If not logged in, <code>LoginCoordinator</code> gets a new <code>UINavigationController</code> and shows <code>LoginView</code> (SwiftUI) through <code>UIHostingController</code></li>
+<li>After login, <code>TabBarCoordinator</code> creates a <code>UITabBarController</code> with four <code>UINavigationController</code> tabs</li>
+<li>Each tab coordinator wraps its root SwiftUI view in <code>UIHostingController</code> and puts it on its navigation controller</li>
+</ol>
+<p>The cross-dissolve between flows uses plain UIKit animation:</p>
+<pre><code class="language-swift">    case .loginCompleted:
+        guard self.onboardingService.onboardedCompleted(for: .login) == .completed else {
+            try self.transition(to: AppTransition.onboarding)
+            return
+        }
+
+        let tabBarCoordinator = TabBarCoordinator(parent: self)
+        try tabBarCoordinator.start()
+        self.children.add(tabBarCoordinator)
+
+        UIView.transition(with: self.window, duration: 0.5, options: .transitionCrossDissolve) {
+            self.window.rootViewController = tabBarCoordinator.tabBarController
+        }
+</code></pre>
+<p>Pure UIKit animation code, in a coordinator that presents SwiftUI views. The two worlds coexist because the boundary is always <code>UIHostingController</code>.</p>
+<h2 id="when-to-use-this-approach">When to Use This Approach</h2>
+<p>The Mixed architecture makes sense when:</p>
+<ul>
+<li>You have an existing UIKit app and want to <strong>adopt SwiftUI one screen at a time</strong></li>
+<li>You need UIKit-level control over navigation, custom transitions, coordinator-managed stacks</li>
+<li>Your team is picking up SwiftUI and wants to <strong>replace screens gradually</strong></li>
+</ul>
+<p>If you&#39;re starting from scratch with no UIKit to migrate, wait for our next Part 3 and go pure SwiftUI from day one.</p>
+<p>The beauty of the Mixed approach is that it&#39;s not a permanent destination. It&#39;s a <strong>bridge</strong>. Every screen you build in SwiftUI for the Mixed app is one screen closer to a pure SwiftUI app, and because the views only talk to <code>HostingCoordinator</code>, they&#39;ll work unchanged when you get there.</p>
+<hr>
+<h2 id="up-next-part-3-pure-swiftui">Up Next: Part 3 Pure SwiftUI</h2>
+<p>In Part 3 we drop UIKit entirely. No <code>AppDelegate</code>, no <code>UINavigationController</code>, no <code>UIHostingController</code>. The <code>@main</code> entry point becomes a SwiftUI <code>App</code> struct, and navigation moves to the <strong>NavigatorUI</strong> library: each flow is a <code>ManagedNavigationStack</code>, each module declares a <code>NavigationDestination</code> enum that maps a route to a view and a presentation <code>method</code> (push or sheet), and views talk to an injected <code>Navigator</code> from the environment instead of a coordinator object.</p>
+<p>The shared code keeps doing its job: models, services, networking, the design system, and the Factory <code>Container</code> service registrations live in <code>Shared/</code> and compile into all three apps. The SwiftUI files that came out byte-identical between Mixed and pure SwiftUI live in <code>Shared-SwiftUI/</code> and compile into both. The views whose only difference is <em>how</em> they trigger navigation stay per-app — that difference is exactly what Part 3 is about.</p>
+<p>The complete source code for all three apps is available on <a href="https://github.com/sadiq81/MVVM-CS-demo">GitHub</a>.</p>
+<hr>
+<p><em>This is Part 2 of a 3-part series on MVVM-CS architecture for iOS. <a href="https://medium.com/@tommysadiqhinrichsen/building-scalable-ios-apps-a-modern-mvvm-coordinator-architecture-with-service-dependency-7ecf18c269ac">Part 1</a> covers the pure UIKit approach. Part 3 covers pure SwiftUI.</em></p>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+// Production-Shared.xcconfig
+// Common production environment settings shared across all apps
+#include "Common-Shared.xcconfig"
+
+ENVIRONMENT_BACKEND_URL = https:/$()/some-app.herokuapp.com/api/
+
+ENVIRONMENT_OPEN_ID_ISSUER_URL = https:/$()/netseidbroker.dk/op

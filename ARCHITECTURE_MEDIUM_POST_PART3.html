@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MVVM-CS Part 3</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 740px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #292929; font-size: 18px; }
+  h1 { font-size: 32px; font-weight: bold; margin-top: 40px; }
+  h2 { font-size: 24px; font-weight: bold; margin-top: 40px; border-bottom: none; }
+  h3 { font-size: 20px; font-weight: bold; margin-top: 30px; }
+  pre { background: #f5f5f5; padding: 20px; overflow-x: auto; border-radius: 4px; font-size: 14px; line-height: 1.5; }
+  code { font-family: Menlo, Monaco, monospace; font-size: 14px; }
+  p code, li code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+  pre code { background: none; padding: 0; }
+  blockquote { border-left: 3px solid #ccc; margin-left: 0; padding-left: 20px; color: #666; }
+  a { color: #1a8917; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+  table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; font-size: 14px; }
+  th { background: #f5f5f5; font-weight: bold; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 40px 0; }
+  ul, ol { padding-left: 30px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<h1 id="mvvm-cs-architecture-for-ios----part-3-pure-swiftui">MVVM-CS Architecture for iOS -- Part 3: Pure SwiftUI</h1>
+<h2 id="completing-the-migration-how-mvvm-cs-translates-to-a-fully-declarative-swiftui-app">Completing the Migration: How MVVM-CS Translates to a Fully Declarative SwiftUI App</h2>
+<hr>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#the-pure-swiftui-entry-point">The Pure SwiftUI Entry Point</a></li>
+<li><a href="#navigatorui-navigation-without-coordinator-objects">NavigatorUI: Navigation Without Coordinator Objects</a></li>
+<li><a href="#destination-enums-routes-that-render-themselves">Destination Enums: Routes That Render Themselves</a></li>
+<li><a href="#the-app-level-flow-screens-and-events">The App-Level Flow: Screens and Events</a></li>
+<li><a href="#views-own-navigation-viewmodels-stay-pure">Views Own Navigation; ViewModels Stay Pure</a></li>
+<li><a href="#swiftui-viewmodels-direct-observableobject">SwiftUI ViewModels: Direct ObservableObject</a></li>
+<li><a href="#tab-based-navigation">Tab-Based Navigation</a></li>
+<li><a href="#the-full-progression-uikit-to-mixed-to-swiftui">The Full Progression: UIKit to Mixed to SwiftUI</a></li>
+<li><a href="#conclusion-three-apps-one-architecture">Conclusion: Three Apps, One Architecture</a></li>
+</ol>
+<hr>
+<h2 id="introduction">Introduction</h2>
+<p>In <a href="https://medium.com/@tommysadiqhinrichsen/building-scalable-ios-apps-a-modern-mvvm-coordinator-architecture-with-service-dependency-7ecf18c269ac">Part 1</a> we built a production-grade iOS app with MVVM-CS and pure UIKit. Coordinators owned <code>UINavigationController</code> instances, ViewModels talked through Combine publishers, and views were <code>UIViewController</code> subclasses wired to storyboards.</p>
+<p><a href="https://medium.com/@tommysadiqhinrichsen">Part 2</a> introduced the Mixed app -- UIKit coordinators still ran navigation via <code>UINavigationController</code>, but the views themselves were SwiftUI, hosted through <code>UIHostingController</code>. The <code>HostingCoordinator</code> bridge made it possible without SwiftUI views ever knowing they lived inside UIKit.</p>
+<p>Now we finish the journey. The pure SwiftUI app drops UIKit entirely. No <code>AppDelegate</code>, no <code>SceneDelegate</code>, no <code>UINavigationController</code>, no <code>UIHostingController</code>. Navigation is handled declaratively with the <strong>NavigatorUI</strong> library: flows are wrapped in a <code>ManagedNavigationStack</code>, each module declares a <code>NavigationDestination</code> enum that maps a route to a view <em>and</em> its presentation style, and views reach navigation through an injected <code>Navigator</code> from the environment.</p>
+<p>Here&#39;s the honest part of the story, though. In Part 2 I said the same SwiftUI view files compile into both the Mixed and the pure SwiftUI app. That&#39;s true for the views that don&#39;t navigate -- a <code>VideoPlayerView</code>, a <code>PinInputView</code>, a presentation-only <code>SecretView</code>. But a screen that <em>triggers</em> navigation can&#39;t be identical across the two apps, because the navigation mechanism is different: the Mixed app sends transitions through <code>HostingCoordinator</code>, the pure SwiftUI app sends destinations through <code>Navigator</code>. So the byte-identical files live in <code>Shared-SwiftUI/</code> and compile into both apps, while the navigating views stay in each app&#39;s own target. Same view, same layout, different last mile. This article is about that last mile.</p>
+<hr>
+<h2 id="the-pure-swiftui-entry-point">The Pure SwiftUI Entry Point</h2>
+<p>The most obvious change is the app&#39;s front door. The UIKit and Mixed apps need an <code>AppDelegate</code>. The pure SwiftUI app replaces all of it with <code>@main</code>:</p>
+<pre><code class="language-swift">@main
+struct CustomerApp: App {
+
+    init() {
+        // DI Container
+        AppContainer.configure()
+
+        // Custom fonts — swizzle UIFont.preferredFont to use Montserrat
+        Appearance.configure()
+
+        // Firebase
+        // FirebaseApp.configure()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            AppRootView()
+        }
+    }
+}
+</code></pre>
+<p>A few things worth noting:</p>
+<ul>
+<li><strong>No UIKit lifecycle code.</strong> No <code>application(_:didFinishLaunchingWithOptions:)</code>, no window setup, no root view controller assignment. The container and appearance setup that used to happen in <code>AppDelegate</code> now happens in the <code>App</code> struct&#39;s <code>init</code>.</li>
+<li><strong><code>AppRootView</code> is the whole app.</strong> It decides which flow is on screen and listens for app-level navigation events. No root coordinator object is created here.</li>
+</ul>
+<p>The interesting question is: with no coordinator objects and no <code>UINavigationController</code>, what actually drives navigation?</p>
+<hr>
+<h2 id="navigatorui-navigation-without-coordinator-objects">NavigatorUI: Navigation Without Coordinator Objects</h2>
+<p>In the UIKit and Mixed apps, every push, pop, and present went through a coordinator -- an <code>NSObject</code> conforming to <code>CoordinatorType</code>, owning a <code>UINavigationController</code>. The pure SwiftUI app doesn&#39;t have those. Instead it leans on <strong>NavigatorUI</strong>, a small library (from the author of Factory) that gives SwiftUI a coordinator-like navigation model without leaving the declarative world.</p>
+<p>Two pieces do the heavy lifting:</p>
+<ol>
+<li><strong><code>ManagedNavigationStack</code></strong> wraps a flow and owns the underlying <code>NavigationStack</code> and its path. You give it a <code>scene</code> name; it manages the rest.</li>
+<li><strong><code>Navigator</code></strong>, injected via <code>@Environment(\.navigator)</code>, is the handle a view uses to navigate. Calling <code>navigator.navigate(to:)</code> pushes or presents a destination; calling <code>navigator.send(_:)</code> broadcasts an event up the tree.</li>
+</ol>
+<p>A flow root looks like this:</p>
+<pre><code class="language-swift">ManagedNavigationStack(scene: &quot;more&quot;) {
+    MoreView()
+}
+</code></pre>
+<p>And a view that wants to navigate just asks the environment for the navigator:</p>
+<pre><code class="language-swift">struct SomeView: View {
+
+    @Environment(\.navigator)
+    private var navigator: Navigator
+
+    var body: some View {
+        Button(&quot;Profile&quot;) {
+            self.navigator.navigate(to: MoreDestination.profile)
+        }
+    }
+}
+</code></pre>
+<p>No <code>NavigationLink</code>, no manually managed <code>NavigationPath</code>, no concrete coordinator type referenced from the view. The navigator is the seam between the view and the navigation stack, the same role <code>HostingCoordinator</code> played in the Mixed app.</p>
+<hr>
+<h2 id="destination-enums-routes-that-render-themselves">Destination Enums: Routes That Render Themselves</h2>
+<p>In the UIKit app, a coordinator&#39;s <code>transition(to:)</code> switched over a <code>Transition</code> enum and built the destination view controller inline. In the SwiftUI app, that responsibility moves into a <code>NavigationDestination</code> enum -- each module owns one, and the enum knows both <em>what view</em> a route renders and <em>how</em> it should be presented:</p>
+<pre><code class="language-swift">@MainActor
+enum MoreDestination: NavigationDestination {
+
+    case profile
+    case password
+    case secureContent
+    case countryPicker(CountrySelectionMode)
+    case webview(URL)
+    case addressSearch
+    case validateAge
+
+    var body: some View {
+        switch self {
+            case .profile:          UserProfileView()
+            case .password:         PasswordView()
+            case .secureContent:    SecretView()
+            case .countryPicker(let mode): CountryPickerView(mode: mode)
+            case .webview(let url):
+                SafariView(url: url).ignoresSafeArea()
+            case .addressSearch:    AddressSearchView()
+            case .validateAge:      OIDAuthorizationView()
+        }
+    }
+
+    var method: NavigationMethod {
+        switch self {
+            case .profile, .password, .secureContent:
+                return .push
+            case .countryPicker, .webview, .validateAge, .addressSearch:
+                return .sheet
+        }
+    }
+}
+</code></pre>
+<p>Two things make this pattern pull its weight:</p>
+<ul>
+<li><strong><code>var body</code></strong> -- the destination <em>is</em> a view factory. NavigatorUI calls into it to build the screen when a route is navigated to. There&#39;s no separate <code>.navigationDestination(for:)</code> switch to keep in sync; the enum is the single source of truth.</li>
+<li><strong><code>var method</code></strong> -- push or sheet is a property of the route, declared right next to it. The More flow pushes <code>.profile</code> and <code>.password</code>, but presents <code>.countryPicker</code> and <code>.webview</code> as sheets. Changing how a screen appears is a one-line edit in the enum, not a change at every call site.</li>
+</ul>
+<p>Type safety stays at the module level. <code>MoreView</code> navigates with <code>MoreDestination</code> values, <code>FavoritesView</code> with <code>FavoritesDestination</code>. The compiler won&#39;t let you push a More route from the Favorites flow.</p>
+<p>Routes that carry data are just enum cases with associated values, and the <code>body</code> resolves the right ViewModel as it builds the screen:</p>
+<pre><code class="language-swift">@MainActor
+enum FavoritesDestination: NavigationDestination {
+
+    case details(ProductModel)
+
+    var body: some View {
+        switch self {
+            case .details(let product):
+                let viewModel = Container.shared.productDetailViewModel(product)
+                ProductDetailView(viewModel: viewModel)
+        }
+    }
+
+    var method: NavigationMethod { .push }
+}
+</code></pre>
+<p><code>Container.shared.productDetailViewModel(product)</code> is a <code>ParameterFactory</code> -- the model is passed in at resolve time. No casting, no resolve-then-mutate dance; the route value flows straight into the ViewModel.</p>
+<hr>
+<h2 id="the-app-level-flow-screens-and-events">The App-Level Flow: Screens and Events</h2>
+<p>App-level navigation -- splash → login → onboarding → tab bar -- isn&#39;t a push/pop stack, so it doesn&#39;t belong to a <code>ManagedNavigationStack</code>. It&#39;s a flow switch, and <code>AppRootView</code> owns it with a plain <code>@State</code>:</p>
+<pre><code class="language-swift">struct AppRootView: View {
+
+    @State private var screen: AppScreen = .splash
+
+    // services injected via @Injected(\.…) …
+
+    var body: some View {
+        ZStack {
+            Color(Colors.Background.default.color).ignoresSafeArea()
+
+            switch self.screen {
+                case .splash:
+                    ManagedNavigationStack(scene: &quot;splash&quot;) { SplashView() }
+                        .transition(.opacity)
+                case .login:
+                    ManagedNavigationStack(scene: &quot;login&quot;) { LoginView() }
+                        .transition(.move(edge: .trailing))
+                case .onboarding:
+                    OnboardingView()
+                        .transition(.move(edge: .trailing))
+                case .tabBar:
+                    TabBarView()
+                        .transition(.move(edge: .trailing))
+            }
+        }
+        .animation(.easeInOut, value: self.screen)
+        .onNavigationReceive { (event: AppEvent, _) in
+            self.handleEvent(event)
+            return .auto
+        }
+    }
+}
+</code></pre>
+<p>Two enums keep &quot;what happened&quot; separate from &quot;what to show&quot;:</p>
+<pre><code class="language-swift">// What to display
+enum AppScreen: Equatable {
+    case splash
+    case login
+    case onboarding
+    case tabBar
+}
+
+// What happened
+enum AppEvent: Hashable {
+    case splashCompleted
+    case loginCompleted
+    case onboardingCompleted
+    case logout
+}
+</code></pre>
+<p>A view broadcasts an event with <code>navigator.send(...)</code>. <code>AppRootView</code> catches it through <code>.onNavigationReceive</code> and maps it to the next screen -- the same decision logic the UIKit <code>AppCoordinator</code> ran, just expressed as state instead of <code>window.rootViewController</code> assignment:</p>
+<pre><code class="language-swift">private func handleEvent(_ event: AppEvent) {
+    switch event {
+        case .splashCompleted:
+            if self.userService.user.exists {
+                self.screen = self.onboardingService.onboardedCompleted(for: .login) == .completed
+                    ? .tabBar : .onboarding
+            } else {
+                self.screen = .login
+            }
+        case .loginCompleted:
+            self.screen = self.onboardingService.onboardedCompleted(for: .login) == .completed
+                ? .tabBar : .onboarding
+        case .onboardingCompleted:
+            self.screen = .tabBar
+        case .logout:
+            self.handleLogout()
+    }
+}
+</code></pre>
+<p>The splash screen, for instance, simply announces it&#39;s done:</p>
+<pre><code class="language-swift">self.navigator.send(AppEvent.splashCompleted)
+</code></pre>
+<p>The <code>ZStack</code> plus <code>.transition()</code> modifiers give us animated switches between flows -- in UIKit this would have meant a custom <code>UIViewControllerAnimatedTransitioning</code>. Here it&#39;s two lines.</p>
+<hr>
+<h2 id="views-own-navigation-viewmodels-stay-pure">Views Own Navigation; ViewModels Stay Pure</h2>
+<p>A deliberate rule in the pure SwiftUI app: <strong>ViewModels never touch navigation.</strong> No <code>Navigator</code>, no <code>…Destination</code>, no <code>AppEvent</code> — a ViewModel does business logic and exposes plain observable state. Navigation lives entirely in the Views (which hold the <code>Navigator</code>) and the <code>Navigator</code> itself. Three cases cover everything.</p>
+<p><strong>1. Pure navigation</strong> — a control that always goes to the same place. The View calls the navigator inline; there&#39;s nothing for the ViewModel to do:</p>
+<pre><code class="language-swift">Button(&quot;Profile&quot;) {
+    self.navigator.navigate(to: MoreDestination.profile)   // push or sheet, per Destination.method
+}
+</code></pre>
+<p><strong>2. Navigation that follows async work</strong> (login succeeded, signup, onboarding finished, logout). The ViewModel flips a plain flag; the View observes it and fires the event:</p>
+<pre><code class="language-swift">// ViewModel — no navigation types at all
+@Published var didLogin = false
+func login() { Task { try await loginService.login(...); self.didLogin = true } }
+
+// View
+.onChange(of: self.viewModel.didLogin) { _, ok in
+    if ok { self.navigator.send(AppEvent.loginCompleted) }
+}
+</code></pre>
+<p><strong>3. Navigation whose destination is <em>decided</em> by business logic.</strong> The ViewModel returns a <strong>domain result</strong> (still no navigation types); the View maps that result to a route. The &quot;secret&quot; screen, for instance, needs a PIN flow unless the data is already unlocked:</p>
+<pre><code class="language-swift">// ViewModel
+enum SecureContentRoute { case secret, validate, enroll(Data) }
+@Published var secureContentRoute: SecureContentRoute?
+func requestSecureContent() { /* inspect secure storage, then set the route */ }
+
+// View
+.onReceive(self.viewModel.$secureContentRoute) { route in
+    guard let route else { return }
+    switch route {
+        case .secret:           self.navigator.navigate(to: MoreDestination.secureContent)
+        case .validate:         self.navigator.navigate(to: PinDestination.validate)
+        case .enroll(let data): self.navigator.navigate(to: PinDestination.enroll(data))
+    }
+}
+</code></pre>
+<p>The ViewModel decides <em>what happened</em> (a result); the View decides <em>where that leads</em> (a route). The ViewModel has zero knowledge of the navigation graph — which keeps it trivially testable and reusable, and means the same business logic could drive a different navigation shape without changing the ViewModel at all.</p>
+<hr>
+<h2 id="swiftui-viewmodels-direct-observableobject">SwiftUI ViewModels: Direct ObservableObject</h2>
+<p>Aside from that navigation property, SwiftUI ViewModels follow the same shape as in the Mixed app. In UIKit, ViewModels hide behind a protocol (<code>ProductSearchViewModelType</code>) and expose Combine publishers; view controllers subscribe in <code>configureBindings()</code>. For SwiftUI we take the shorter path -- the ViewModel itself is the <code>ObservableObject</code>, with <code>@Published</code> properties SwiftUI observes natively:</p>
+<pre><code class="language-swift">@MainActor
+final class ProductSearchViewModel: ObservableObject {
+
+    @Published var searchText: String = &quot;&quot;
+    @Published var searchResults: ProductSearchResult?
+    @Published var isLoading = false
+    @Published var selectedBrands: [any ProductFilter] = []
+    @Published var selectedCategories: [any ProductFilter] = []
+
+    @Injected(\.productService)
+    private var productService: any ProductServiceType
+
+    @Injected(\.filtersService)
+    private var filterService: any FiltersServiceType
+
+    private var cancellables = Set&lt;AnyCancellable&gt;()
+
+    init() {
+        self.$searchText
+            .removeDuplicates()
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] text in self?.internalSearchText = text }
+            .store(in: &amp;self.cancellables)
+
+        // Subscribe to filter service Combine publishers internally…
+    }
+}
+</code></pre>
+<p>Services come in through <code>@Injected(\.productService)</code> from the Factory <code>Container</code>. Combine subscriptions to service-level publishers happen inside the ViewModel; results surface as <code>@Published</code> properties. The view sees none of the plumbing:</p>
+<pre><code class="language-swift">struct ProductSearchView: View {
+
+    @Environment(\.navigator)
+    private var navigator: Navigator
+
+    @InjectedObject(\.productSearchViewModel)
+    private var viewModel
+
+    var body: some View {
+        VStack(spacing: 0) {
+            searchAndFilterBar
+            productList
+        }
+    }
+}
+</code></pre>
+<p><code>@InjectedObject(\.productSearchViewModel)</code> resolves the ViewModel from the <code>Container</code> and manages its lifecycle the way <code>@StateObject</code> would. The registrations live in <code>customerapp-SwiftUI/Sources/Extensions/Factory/Container+ViewModels.swift</code>:</p>
+<pre><code class="language-swift">extension Container {
+
+    var productSearchViewModel: Factory&lt;ProductSearchViewModel&gt; {
+        self { MainActor.assumeIsolated { ProductSearchViewModel() } }.shared
+    }
+
+    // ViewModels that need context register as a ParameterFactory
+    var productDetailViewModel: ParameterFactory&lt;ProductModel, ProductDetailViewModel&gt; {
+        self { product in
+            MainActor.assumeIsolated { ProductDetailViewModel(product: product) }
+        }.shared
+    }
+}
+</code></pre>
+<p>Two kinds of registration, one rule of thumb. A zero-argument <code>Factory</code> for ViewModels that stand on their own; a <code>ParameterFactory</code> for the ones that need data -- the product on a detail screen, the secret payload on a PIN screen. The route&#39;s associated value flows straight into the ViewModel at resolve time, which is why <code>FavoritesDestination.details</code> could call <code>Container.shared.productDetailViewModel(product)</code> directly.</p>
+<p>When you eventually move to <code>@Observable</code> (iOS 17+), you swap the <code>ObservableObject</code> conformance and the rest stays untouched.</p>
+<hr>
+<h2 id="tab-based-navigation">Tab-Based Navigation</h2>
+<p><code>TabBarView</code> takes over from <code>UITabBarController</code>. Each tab gets its own <code>ManagedNavigationStack</code>, so each tab owns an independent navigation stack -- exactly like UIKit where each tab had its own <code>UINavigationController</code>:</p>
+<pre><code class="language-swift">struct TabBarView: View {
+
+    @State private var selectedTab: TabBarIndex = .dashboard
+
+    enum TabBarIndex: Hashable {
+        case dashboard, search, favorites, more
+    }
+
+    var body: some View {
+        TabView(selection: self.$selectedTab) {
+            ManagedNavigationStack(scene: &quot;dashboard&quot;) { DashboardView() }
+                .tabItem { Label(Strings.Tabbar.dashboard, systemImage: Images.System.dashboard) }
+                .tag(TabBarIndex.dashboard)
+
+            ManagedNavigationStack(scene: &quot;search&quot;) { ProductSearchView() }
+                .tabItem { Label(Strings.Tabbar.search, systemImage: Images.System.search) }
+                .tag(TabBarIndex.search)
+
+            ManagedNavigationStack(scene: &quot;favorites&quot;) { FavoritesView() }
+                .tabItem { Label(Strings.Tabbar.entities, systemImage: Images.System.favorites) }
+                .tag(TabBarIndex.favorites)
+
+            ManagedNavigationStack(scene: &quot;more&quot;) { MoreView() }
+                .tabItem { Label(Strings.Tabbar.more, systemImage: Images.System.more) }
+                .tag(TabBarIndex.more)
+        }
+        .accentColor(Color(Colors.Foreground.brand.color))
+        .onNavigationReceive(assign: self.$selectedTab)
+    }
+}
+</code></pre>
+<p>Two NavigatorUI touches make this more than a plain <code>TabView</code>:</p>
+<ul>
+<li>Each tab&#39;s content is a <code>ManagedNavigationStack</code> with its own <code>scene</code>, so pushing a detail view in Search leaves the Favorites stack untouched.</li>
+<li><code>.onNavigationReceive(assign: self.$selectedTab)</code> lets <em>any</em> part of the app switch tabs by sending a <code>TabBarIndex</code> -- the declarative equivalent of <code>tabBarController.selectedIndex = …</code>.</li>
+</ul>
+<hr>
+<h2 id="the-full-progression-uikit-to-mixed-to-swiftui">The Full Progression: UIKit to Mixed to SwiftUI</h2>
+<p>Here&#39;s how each piece of the architecture translates across all three apps:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>UIKit</th>
+<th>Mixed</th>
+<th>SwiftUI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Entry Point</strong></td>
+<td><code>AppDelegate</code></td>
+<td><code>AppDelegate</code></td>
+<td><code>@main App</code> struct</td>
+</tr>
+<tr>
+<td><strong>Navigation Stack</strong></td>
+<td><code>UINavigationController</code></td>
+<td><code>UINavigationController</code></td>
+<td><code>ManagedNavigationStack</code> (NavigatorUI)</td>
+</tr>
+<tr>
+<td><strong>Navigation owner</strong></td>
+<td><code>CoordinatorType</code> (NSObject)</td>
+<td><code>CoordinatorType</code> (NSObject)</td>
+<td><code>Navigator</code> via <code>@Environment(\.navigator)</code></td>
+</tr>
+<tr>
+<td><strong>Push a View</strong></td>
+<td><code>nav.pushViewController(vc)</code></td>
+<td><code>nav.pushViewController(UIHostingController(rootView:))</code></td>
+<td><code>navigator.navigate(to:)</code> + destination <code>.method = .push</code></td>
+</tr>
+<tr>
+<td><strong>Pop</strong></td>
+<td><code>nav.popViewController(animated:)</code></td>
+<td>Same</td>
+<td>navigator dismiss / back</td>
+</tr>
+<tr>
+<td><strong>Present Modal</strong></td>
+<td><code>vc.present(modal)</code></td>
+<td><code>vc.present(UIHostingController(rootView:))</code></td>
+<td>destination <code>.method = .sheet</code></td>
+</tr>
+<tr>
+<td><strong>Route Definition</strong></td>
+<td>Implicit (any ViewController)</td>
+<td>Implicit (any UIHostingController)</td>
+<td><code>NavigationDestination</code> enum with <code>body</code> + <code>method</code></td>
+</tr>
+<tr>
+<td><strong>View Implementation</strong></td>
+<td><code>UIViewController</code> + Storyboard</td>
+<td>SwiftUI <code>View</code> in <code>UIHostingController</code></td>
+<td>SwiftUI <code>View</code></td>
+</tr>
+<tr>
+<td><strong>View → navigation</strong></td>
+<td>Delegate or coordinator</td>
+<td><code>@EnvironmentObject HostingCoordinator</code></td>
+<td><code>@Environment(\.navigator)</code> in the View; ViewModel exposes only domain state</td>
+</tr>
+<tr>
+<td><strong>Flow switching</strong></td>
+<td><code>window.rootViewController</code></td>
+<td><code>window.rootViewController</code></td>
+<td><code>@State screen</code> + <code>.onNavigationReceive</code></td>
+</tr>
+<tr>
+<td><strong>Tab Bar</strong></td>
+<td><code>UITabBarController</code></td>
+<td><code>UITabBarController</code></td>
+<td><code>TabView</code> of <code>ManagedNavigationStack</code>s</td>
+</tr>
+<tr>
+<td><strong>Transitions / Events</strong></td>
+<td>Module <code>Transition</code> enums</td>
+<td>Same</td>
+<td><code>NavigationDestination</code> + <code>AppEvent</code></td>
+</tr>
+<tr>
+<td><strong>ViewModel</strong></td>
+<td><code>*ViewModelType</code> protocol + Combine</td>
+<td>Direct <code>ObservableObject</code> with <code>@Published</code></td>
+<td>Direct <code>ObservableObject</code> with <code>@Published</code></td>
+</tr>
+<tr>
+<td><strong>DI</strong></td>
+<td><code>@Injected(\.service)</code> via Factory Container</td>
+<td>Same (+ <code>@InjectedObject</code>)</td>
+<td>Same (+ <code>ParameterFactory</code> for VMs with data)</td>
+</tr>
+</tbody></table>
+<p>The progression makes sense once you see it laid out:</p>
+<ol>
+<li><strong>UIKit</strong> -- coordinators are fully imperative. They own UIKit objects and call UIKit APIs directly.</li>
+<li><strong>Mixed</strong> -- coordinators are still imperative, but they wrap SwiftUI views in <code>UIHostingController</code> before pushing. The views themselves are declarative.</li>
+<li><strong>SwiftUI</strong> -- there are no coordinator objects. NavigatorUI&#39;s <code>Navigator</code> plays the coordinator role, <code>NavigationDestination</code> enums own the route-to-view mapping and presentation style, and app-level flow is plain SwiftUI state driven by <code>AppEvent</code>s.</li>
+</ol>
+<p>The business logic -- services, models, networking, the design system, Factory <code>Container</code> service registrations -- <strong>stays shared</strong> across all three apps from <code>Shared/</code>. The SwiftUI files that came out byte-identical between Mixed and pure SwiftUI live in <code>Shared-SwiftUI/</code> and compile into both. When the navigation technology changes, only the navigation layer changes. Everything underneath stays stable.</p>
+<hr>
+<h2 id="conclusion-three-apps-one-architecture">Conclusion: Three Apps, One Architecture</h2>
+<p>This three-part series has walked through a complete iOS architecture that works at every point on the UIKit-to-SwiftUI spectrum.</p>
+<p><strong>Part 1</strong> laid the groundwork: MVVM for separating view logic from business logic, Coordinators for pulling navigation into dedicated objects, Services for managing data access through dependency injection. These patterns have been running in 15+ production apps with over a million daily users.</p>
+<p><strong>Part 2</strong> showed you don&#39;t have to pick sides. <code>HostingCoordinator</code> lets you write SwiftUI views and host them in a UIKit navigation stack -- keeping your coordinator infrastructure intact while modernizing views one screen at a time.</p>
+<p><strong>Part 3</strong> (this article) finished the picture. In a pure SwiftUI app, the coordinator objects disappear entirely. NavigatorUI&#39;s <code>Navigator</code> becomes the navigation seam, <code>ManagedNavigationStack</code> owns each flow&#39;s stack, and every module declares a <code>NavigationDestination</code> enum that maps routes to views and to a push-or-sheet <code>method</code>. App-level flow is plain SwiftUI state driven by <code>AppEvent</code>s. No <code>UINavigationController</code>, no <code>UIHostingController</code>, no hand-rolled <code>NavigationPath</code> plumbing.</p>
+<p>The thing I want you to take away isn&#39;t the specific library -- it&#39;s that the seam never moved. UIKit had <code>CoordinatorType</code>, Mixed had <code>HostingCoordinator</code>, SwiftUI has <code>Navigator</code>. In all three, the view says &quot;take me to this route&quot; and something else decides how. That consistency is what let the same models, services, and a large slice of the SwiftUI layer compile unchanged across all three apps.</p>
+<p>The shared code lives in two folders:</p>
+<ul>
+<li><strong><code>Shared/</code></strong> -- models, services, networking, the cross-app design system, Foundation/UIKit/AppAuth extensions, and the Factory <code>Container</code> <em>service</em> registrations (<code>Container+Services</code>). Compiled into all three apps (all six targets).</li>
+<li><strong><code>Shared-SwiftUI/</code></strong> -- the SwiftUI views and ViewModels that are byte-identical between the Mixed and pure SwiftUI apps (e.g. <code>VideoPlayerView</code>, <code>PinInputView</code>, <code>SecretView</code>). Compiled into Mixed and SwiftUI, excluded from UIKit.</li>
+</ul>
+<p>Views whose only difference is <em>how</em> they trigger navigation stay in each app&#39;s target, and Xcode&#39;s file-system-synchronized groups -- not symlinks -- decide what compiles where.</p>
+<p>Dependency injection runs on the <strong>Factory</strong> pattern throughout. Services register as <code>Factory&lt;any ServiceType&gt;</code> in shared <code>Container</code> extensions. SwiftUI ViewModels register per-app as <code>Factory&lt;ConcreteViewModel&gt;</code> (or <code>ParameterFactory&lt;Input, ConcreteViewModel&gt;</code> when they need data) and resolve through <code>@InjectedObject(\.viewModel)</code>, which acts like <code>@StateObject</code>. UIKit ViewModels use protocol-typed <code>Factory&lt;any ViewModelType&gt;</code> registrations. The same <code>@Injected(\.service)</code> keypath syntax works identically everywhere.</p>
+<p>Starting fresh today? Go pure SwiftUI. Maintaining an existing UIKit app? The Mixed approach gives you a migration path. Need to support both during the transition? This architecture handles it while sharing nearly everything but the last mile of navigation.</p>
+<p>The complete source for all three apps is on <a href="https://github.com/sadiq81/MVVM-CS-demo">GitHub</a>.</p>
+<hr>
+<p><em>Tommy Sadiq Hinrichsen (<a href="https://medium.com/@tommysadiqhinrichsen">@tommysadiqhinrichsen</a>) is a senior iOS developer and the creator of MustacheKit. This is Part 3 of a 3-part series on MVVM-CS architecture for iOS.</em></p>
+
+</body>
+</html>

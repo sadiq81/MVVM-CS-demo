@@ -1,0 +1,11 @@
+# SwiftLint Configuration
+
+excluded:
+  - Config
+
+custom_rules:
+  injected_multiline:
+    name: "Injected Multiline"
+    regex: '@(Injected|LazyInjected|WeakLazyInjected)\([^\)]+\)[ \t]+(private |fileprivate |internal |public )?var '
+    message: "@Injected/@LazyInjected must be on its own line, separate from the var declaration."
+    severity: warning

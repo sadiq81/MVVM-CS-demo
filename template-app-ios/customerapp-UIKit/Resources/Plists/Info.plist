@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ENVIRONMENT_APP_NAME</key>
+	<string>$(ENVIRONMENT_APP_NAME)</string>
+	<key>ENVIRONMENT_BUNDLE_IDENTIFIER</key>
+	<string>$(ENVIRONMENT_BUNDLE_IDENTIFIER) </string>
+	<key>ENVIRONMENT_CONFIGURATION</key>
+	<string>$(ENVIRONMENT_CONFIGURATION)</string>
+	<key>ENVIRONMENT_BACKEND_URL</key>
+	<string>$(ENVIRONMENT_BACKEND_URL)</string>
+	<key>ENVIRONMENT_CLIENT_ID</key>
+	<string>$(ENVIRONMENT_CLIENT_ID)</string>
+	<key>ENVIRONMENT_CLIENT_SECRET</key>
+	<string>$(ENVIRONMENT_CLIENT_SECRET) </string>
+	<key>ENVIRONMENT_OPEN_ID_ISSUER_URL</key>
+	<string>$(ENVIRONMENT_OPEN_ID_ISSUER_URL) </string>
+	<key>ENVIRONMENT_OPEN_ID_CLIENT_ID</key>
+	<string>$(ENVIRONMENT_OPEN_ID_CLIENT_ID) </string>
+	<key>ENVIRONMENT_OPEN_ID_CLIENT_SECRET</key>
+	<string>$(ENVIRONMENT_OPEN_ID_CLIENT_SECRET) </string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>$(ENVIRONMENT_DYNAMIC_LINK_URL)</string>
+	</array>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Vi bruger Bluetooth til bla bla</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Vi bruger Bluetooth til bla bla</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Vi bruger FaceID til bla bla</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Vi bruger din lokation til bla bla</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Vi bruger din lokation til bla bla</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>temporary</key>
+		<string>Vi bruger din lokation til bla bla</string>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Vi bruger din lokation til bla bla</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Vi bruger Kamera til bla bla</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
+	<key>UIStatusBarStyle</key>
+	<string>Light</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fitnessx</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Montserrat-Black.ttf</string>
+		<string>Montserrat-BlackItalic.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
+		<string>Montserrat-BoldItalic.ttf</string>
+		<string>Montserrat-ExtraBold.ttf</string>
+		<string>Montserrat-ExtraBoldItalic.ttf</string>
+		<string>Montserrat-ExtraLight.ttf</string>
+		<string>Montserrat-ExtraLightItalic.ttf</string>
+		<string>Montserrat-Italic.ttf</string>
+		<string>Montserrat-Light.ttf</string>
+		<string>Montserrat-LightItalic.ttf</string>
+		<string>Montserrat-Medium.ttf</string>
+		<string>Montserrat-MediumItalic.ttf</string>
+		<string>Montserrat-Regular.ttf</string>
+		<string>Montserrat-SemiBold.ttf</string>
+		<string>Montserrat-SemiBoldItalic.ttf</string>
+		<string>Montserrat-Thin.ttf</string>
+		<string>Montserrat-ThinItalic.ttf</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>192.168.1.30</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+			<key>tsh.local</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

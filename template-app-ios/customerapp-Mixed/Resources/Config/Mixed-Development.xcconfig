@@ -1,0 +1,7 @@
+#include "../../../Config/Development-Shared.xcconfig"
+#include "Secrets/Mixed-Development-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = Mixed-Dev
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.mixed.development
+ENVIRONMENT_CONFIGURATION = development

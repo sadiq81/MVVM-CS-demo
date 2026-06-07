@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Mere-->
+        <scene sceneID="GxX-QF-tA0">
+            <objects>
+                <viewController storyboardIdentifier="MoreViewController" id="gDG-5w-7cZ" customClass="MoreViewController" customModule="UIKit_Development" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="R1e-2K-UkN">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scr-01-001">
+                                <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="stk-01-001">
+                                        <rect key="frame" x="20" y="20" width="353" height="500"/>
+                                        <subviews>
+                                            <!-- SETTINGS SECTION -->
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="0" translatesAutoresizingMaskIntoConstraints="NO" id="settings-section">
+                                                <subviews>
+                                                    <!-- Settings Header -->
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="INDSTILLINGER" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="settings-header">
+                                                        <rect key="frame" x="0" y="0" width="353" height="28"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <!-- Settings Rows Container -->
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="settings-rows" userLabel="Settings Rows Container">
+                                                        <rect key="frame" x="0" y="28" width="353" height="96"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="0" translatesAutoresizingMaskIntoConstraints="NO" id="settings-rows-stack">
+                                                                <rect key="frame" x="0" y="0" width="353" height="96"/>
+                                                                <subviews>
+                                                                    <!-- Profile Row -->
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="profile-btn">
+                                                                        <rect key="frame" x="0" y="0" width="353" height="48"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="48" id="profile-h"/>
+                                                                        </constraints>
+                                                                        <state key="normal" title="Profil"/>
+                                                                        <connections>
+                                                                            <action selector="profileTapped" destination="gDG-5w-7cZ" eventType="touchUpInside" id="profile-action"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <!-- Feature 2 Row -->
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="feature2-btn">
+                                                                        <rect key="frame" x="0" y="48" width="353" height="48"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="48" id="feature2-h"/>
+                                                                        </constraints>
+                                                                        <state key="normal" title="Feature 2"/>
+                                                                        <connections>
+                                                                            <action selector="feature2Tapped" destination="gDG-5w-7cZ" eventType="touchUpInside" id="feature2-action"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="settings-rows-stack" firstAttribute="top" secondItem="settings-rows" secondAttribute="top" id="srs-top"/>
+                                                            <constraint firstItem="settings-rows-stack" firstAttribute="leading" secondItem="settings-rows" secondAttribute="leading" id="srs-lead"/>
+                                                            <constraint secondItem="settings-rows-stack" secondAttribute="trailing" firstItem="settings-rows" firstAttribute="trailing" id="srs-trail"/>
+                                                            <constraint secondItem="settings-rows-stack" secondAttribute="bottom" firstItem="settings-rows" firstAttribute="bottom" id="srs-bot"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+
+                                            <!-- FACEID SECTION -->
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="0" translatesAutoresizingMaskIntoConstraints="NO" id="faceid-section">
+                                                <subviews>
+                                                    <!-- FaceID Header -->
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FACEID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="faceid-header">
+                                                        <rect key="frame" x="0" y="0" width="353" height="28"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <!-- FaceID Rows Container -->
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faceid-rows" userLabel="FaceID Rows Container">
+                                                        <rect key="frame" x="0" y="28" width="353" height="48"/>
+                                                        <subviews>
+                                                            <!-- Secret Row -->
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="secret-btn">
+                                                                <rect key="frame" x="0" y="0" width="353" height="48"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="48" id="secret-h"/>
+                                                                </constraints>
+                                                                <state key="normal" title="Hemmeligt"/>
+                                                                <connections>
+                                                                    <action selector="secureContentTapped" destination="gDG-5w-7cZ" eventType="touchUpInside" id="secret-action"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="secret-btn" firstAttribute="top" secondItem="faceid-rows" secondAttribute="top" id="fb-top"/>
+                                                            <constraint firstItem="secret-btn" firstAttribute="leading" secondItem="faceid-rows" secondAttribute="leading" id="fb-lead"/>
+                                                            <constraint secondItem="secret-btn" secondAttribute="trailing" firstItem="faceid-rows" firstAttribute="trailing" id="fb-trail"/>
+                                                            <constraint secondItem="secret-btn" secondAttribute="bottom" firstItem="faceid-rows" firstAttribute="bottom" id="fb-bot"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+
+                                            <!-- LOGOUT BUTTON -->
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="logout-btn">
+                                                <rect key="frame" x="0" y="0" width="353" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="logout-h"/>
+                                                </constraints>
+                                                <state key="normal" title="LOG UD"/>
+                                                <connections>
+                                                    <action selector="logoutTapped" destination="gDG-5w-7cZ" eventType="touchUpInside" id="logout-action"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="stk-01-001" firstAttribute="top" secondItem="scr-01-001" secondAttribute="top" constant="20" id="stk-top"/>
+                                    <constraint firstItem="stk-01-001" firstAttribute="leading" secondItem="scr-01-001" secondAttribute="leading" constant="20" id="stk-lead"/>
+                                    <constraint secondItem="stk-01-001" secondAttribute="trailing" firstItem="scr-01-001" firstAttribute="trailing" constant="20" id="stk-trail"/>
+                                    <constraint secondItem="stk-01-001" secondAttribute="bottom" firstItem="scr-01-001" firstAttribute="bottom" constant="20" id="stk-bot"/>
+                                    <constraint firstItem="stk-01-001" firstAttribute="width" secondItem="scr-01-001" secondAttribute="width" constant="-40" id="stk-width"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="8tV-9Y-drl"/>
+                        <constraints>
+                            <constraint firstItem="scr-01-001" firstAttribute="top" secondItem="8tV-9Y-drl" secondAttribute="top" id="scr-top"/>
+                            <constraint firstItem="scr-01-001" firstAttribute="leading" secondItem="8tV-9Y-drl" secondAttribute="leading" id="scr-lead"/>
+                            <constraint firstItem="8tV-9Y-drl" firstAttribute="trailing" secondItem="scr-01-001" secondAttribute="trailing" id="scr-trail"/>
+                            <constraint firstAttribute="bottom" secondItem="scr-01-001" secondAttribute="bottom" id="scr-bot"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scrollView" destination="scr-01-001" id="scr-out-001"/>
+                        <outlet property="contentStackView" destination="stk-01-001" id="stk-out-001"/>
+                        <outlet property="settingsHeader" destination="settings-header" id="sh-out"/>
+                        <outlet property="settingsRowsContainer" destination="settings-rows" id="sr-out"/>
+                        <outlet property="profileButton" destination="profile-btn" id="pb-out"/>
+                        <outlet property="feature2Button" destination="feature2-btn" id="f2-out"/>
+                        <outlet property="faceIdHeader" destination="faceid-header" id="fh-out"/>
+                        <outlet property="faceIdRowsContainer" destination="faceid-rows" id="fr-out"/>
+                        <outlet property="secretButton" destination="secret-btn" id="sb-out"/>
+                        <outlet property="logoutButton" destination="logout-btn" id="lb-out"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KHK-w8-sH6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="861" y="54"/>
+        </scene>
+    </scenes>
+</document>

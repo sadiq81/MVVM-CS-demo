@@ -1,0 +1,7 @@
+// Shared.xcconfig
+// Common build settings for all app targets (UIKit, Mixed, SwiftUI)
+// App-specific xcconfigs should #include this file
+
+// Deployment
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
+SWIFT_VERSION = 6.0

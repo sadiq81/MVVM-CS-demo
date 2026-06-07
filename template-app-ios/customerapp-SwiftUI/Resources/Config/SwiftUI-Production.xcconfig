@@ -1,0 +1,7 @@
+#include "../../../Config/Production-Shared.xcconfig"
+#include "Secrets/SwiftUI-Production-secrets.xcconfig"
+
+// CHANGEME
+ENVIRONMENT_APP_NAME = SwiftUI
+ENVIRONMENT_BUNDLE_IDENTIFIER = dk.eazyit.app.swiftui.production
+ENVIRONMENT_CONFIGURATION = production

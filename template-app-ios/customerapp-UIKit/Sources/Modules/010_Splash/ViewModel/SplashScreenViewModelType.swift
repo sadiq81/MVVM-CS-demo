@@ -1,0 +1,1 @@
+../../../../../customerapp-Mixed/Sources/Modules/010_Splash/ViewModel/SplashScreenViewModelType.swift
