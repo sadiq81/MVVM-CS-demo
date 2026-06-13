@@ -41,7 +41,15 @@ struct ProductController: RouteCollection {
                 return brandsList.contains(brand)})
         }
         
-        products = products.sorted(by: { ($0.brand ?? "") < ($1.brand ?? "") })
+        // Pagination slices this sorted array per page (skip/limit), and every page
+        // request re-runs this whole pipeline. Sorting on `brand` alone is not a total
+        // order — the many products that share a brand (or have no brand at all) tie,
+        // and Swift's sort gives no stability guarantee, so tied items can be ordered
+        // differently between requests. That reshuffles page boundaries and causes
+        // items to be duplicated or skipped while paging. Add the unique `id` as a
+        // tiebreaker so the order is total, deterministic, and identical on every
+        // request — and matches the app, which orders by brand then id.
+        products = products.sorted(by: { ($0.brand ?? "", $0.id) < ($1.brand ?? "", $1.id) })
         
         response.total = products.count
         response.skip = parameters.skip

@@ -62,7 +62,7 @@ extension ProductModel: Hashable {
         guard lhs.category == rhs.category else { return false }
         guard lhs.thumbnail == rhs.thumbnail else { return false }
         guard lhs.images == rhs.images else { return false }
-        guard !(lhs.isPlaceholder || lhs.isPlaceholder) else { return false }
+        guard !(lhs.isPlaceholder || rhs.isPlaceholder) else { return false }
         return true
     }
 

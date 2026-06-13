@@ -6,7 +6,6 @@ import MustacheFoundation
 import MustacheServices
 import MustacheUIKit
 
-// TODO: Fix pagination, something is wrong with the way they are sorted on the backend compared to app, for the pagination to work properly sorting should be the same
 final class ProductSearchViewController: UIViewController {
     
     // MARK: @IBOutlets
