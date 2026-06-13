@@ -6,15 +6,15 @@
 
 ## Introduction
 
-Pagination is one of those features that looks trivial on a whiteboard and turns into a mess in production. You start with "just load more when the user scrolls to the bottom," and a week later you're fighting duplicate network calls, flickering cells, race conditions between an old search and a new one, and a `UICollectionView` that jumps around every time new data arrives.
+Pagination is one of those features that looks trivial on a whiteboard and turns into a mess in production. You start with "just load more when the user scrolls to the bottom", and a week later you're fighting duplicate network calls, flickering cells, race conditions between an old search and a new one, and a `UICollectionView` that jumps around every time new data is fetched.
 
-In this article I'll walk through a pagination implementation I'm genuinely happy with. It combines three modern tools that complement each other beautifully:
+In this article I'll walk through a pagination implementation I built. It combines three modern tools that complement each other.
 
-- **`UICollectionViewDiffableDataSource`** — so we never call `reloadData()` and never compute index paths by hand.
-- **MVVM** — so the networking, paging math, and request de-duplication live in a testable `ViewModel`, not in the view controller.
-- **Async/await + structured concurrency** — so each page is a cancellable `Task`, and starting a new search cleanly tears down the in-flight requests of the old one.
+- **`UICollectionViewDiffableDataSource`**: so we never call `reloadData()` and never compute index paths by hand.
+- **MVVM**: so the networking, paging math, and request de-duplication live in a testable `ViewModel`, not in the view controller.
+- **Async/await + structured concurrency**: so each page is a cancellable `Task`, and starting a new search tears down the requests of the old one.
 
-The example is a product search screen (`ProductSearchViewController` + `ProductSearchViewModel`) from a sample e‑commerce app. Let's build it up piece by piece.
+The example is a product search screen (`ProductSearchViewController` + `ProductSearchViewModel`) from a sample e-commerce app. Let's walk through it piece by piece.
 
 **What you'll learn:**
 
@@ -28,9 +28,9 @@ The example is a product search screen (`ProductSearchViewController` + `Product
 
 ## The Core Idea: A Sparse Array of Optionals
 
-Most pagination tutorials append pages to a growing `[Item]` array: you have 20 items, you load 20 more, now you have 40. That works, but it throws away a very useful piece of information the backend already gave you — **how many items exist in total**.
+Most pagination tutorials append pages to a growing `[Item]` array, you have 20 items, you load 20 more, now you have 40. That works, but it throws away a very useful piece of information the backend already gave you, which is **how many items exist in total**. This is not always the case but for this implementation we have that luxury.
 
-If we know the total up front, we can allocate the whole array immediately and fill it in lazily:
+If we know the total up front, we can allocate the whole array immediately and fill it in lazily.
 
 ```swift
 struct ProductSearchResult: CustomDebugStringConvertible {
@@ -71,7 +71,7 @@ struct ProductSearchResult: CustomDebugStringConvertible {
 
 The key insight is `products: [ProductModel?]`. If the backend says there are 200 products, `products` is a 200-element array where every slot starts as `nil`. As pages come in, `update(products:skip:limit:)` splices the freshly fetched page into the correct range — page 0 fills indices `0..<20`, page 3 fills `60..<80`, and so on.
 
-This gives us something powerful for free: **a `nil` slot means "this product exists but hasn't loaded yet."** That's exactly the signal we need to show a placeholder cell and to know when to fetch the next page. We don't need a separate "isLoadingMore" flag or a sentinel item — the shape of the data tells us everything.
+This gives us something powerful for free: **a `nil` slot means "this product exists but hasn't loaded yet."** That's exactly the signal we need to show a placeholder cell and to know when to fetch the next page. We don't need a separate "isLoadingMore" flag or a sentinel item, the shape of the data tells us everything.
 
 ---
 
@@ -98,7 +98,7 @@ extension ProductSearchViewModelType {
 }
 ```
 
-Notice the API the View gets is almost insultingly simple: set `searchText`, observe `searchResultsPublisher`, and call `fetch(item:)` with the index of a cell that's about to appear. Everything else — which page that index belongs to, whether it's already loading, whether to cancel — is the ViewModel's job.
+Notice the API the View gets is simple: set `searchText`, observe `searchResultsPublisher`, and call `fetch(item:)` with the index of a cell that's about to appear. Everything else, which page that index belongs to, whether it's already loading, whether to cancel is the ViewModel's job.
 
 ### Setting up the reactive pipeline
 
@@ -132,7 +132,7 @@ Two fields do the heavy lifting:
 
 ### The `fetch(item:)` method
 
-This is the heart of the implementation. Read it slowly:
+This is the heart of the implementation so read it slowly.
 
 ```swift
 func fetch(item: Int) {
@@ -194,9 +194,9 @@ func fetch(item: Int) {
 
 There's a lot of careful engineering packed in here, so let's unpack the decisions:
 
-**1. `item == 0` means "start over."** When the user types a new query (or pulls to refresh), we cancel every in-flight `Task`, empty `fetchTasks`, and reset the published result to `nil`. Structured concurrency makes this clean — `task.cancel()` propagates cancellation into the `await`, and the suspended network call unwinds. No orphaned responses from the previous search will sneak in and corrupt the new one.
+**1. `item == 0` means "start over."** When the user types a new query (or pulls to refresh), we cancel every in-flight `Task`, empty `fetchTasks`, and reset the published result to `nil`. Structured concurrency makes this clean. `task.cancel()` propagates cancellation into the `await`, and the suspended network call unwinds. No orphaned responses from the previous search will sneak in and corrupt the new one.
 
-**2. Index → page math.** `let page = item / .defaultPageSize`. With a page size of 20, cell index 0–19 is page 0, 20–39 is page 1, etc. The backend is called with `skip: page * .defaultPageSize`. The View never has to know any of this; it just hands over a cell index.
+**2. Index to page math.** `let page = item / .defaultPageSize`. With a page size of 20, cell index 0–19 is page 0, 20–39 is page 1, etc. The backend is called with `skip: page * .defaultPageSize`. The View never has to know any of this; it just hands over a cell index.
 
 **3. Two layers of de-duplication.** Because `willDisplay` can fire many times for the same region, we guard twice: once on "is a `Task` already running for this page?" and once on "is this slot already populated?" Either guard short-circuits and we make zero extra network calls.
 
@@ -219,7 +219,7 @@ private func set(task: Task<ProductSearchResult?, Error>?, at index: Int) {
 
 ## The View: DiffableDataSource Driven by the Snapshot
 
-Now the fun part. The view controller declares its data source over two custom types — a `Section` and an `Item`:
+Now the fun part. The view controller declares its data source over two custom types, a `Section` and an `Item`:
 
 ```swift
 @IBOutlet weak var productCollectionView: UICollectionView!
@@ -367,9 +367,9 @@ Cells animate in. Fresh placeholders below trigger the next page.
 
 The responsibilities stay clean:
 
-- **The Model** (`ProductSearchResult`) knows the *shape* of the data — total size, which slots are filled.
-- **The ViewModel** knows the *rules* — page math, de-duplication, cancellation, when to reset.
-- **The View** knows the *presentation* — how to turn a sparse result into sections, cells, and placeholders, and when to ask for more.
+- **The Model** (`ProductSearchResult`) knows the *shape* of the data: total size, which slots are filled.
+- **The ViewModel** knows the *rules*: page math, de-duplication, cancellation, when to reset.
+- **The View** knows the *presentation*: how to turn a sparse result into sections, cells, and placeholders, and when to ask for more.
 
 No massive view controller, no networking in the UI layer, and no manual diffing.
 
@@ -390,11 +390,11 @@ let skipped = products.suffix(from: parameters.skip)
 let limited = skipped.prefix(response.limit)
 ```
 
-The problem: **`brand` is not a unique key.** Loads of products share a brand, and many have no brand at all (they collapse to `""` and all tie). Now consider that *every page request re-runs this entire pipeline* — re-fetch the full list, re-filter, re-sort, then slice out `skip..<skip+limit`. Swift's `sorted(by:)` makes **no stability guarantee**, so when a batch of products compares equal, their order after sorting is unspecified and can differ from one call to the next.
+The problem: **`brand` is not a unique key.** Loads of products share a brand, and many have no brand at all (they collapse to `""` and all tie). Now consider that *every page request re-runs this entire pipeline*, re-fetch the full list, re-filter, re-sort, then slice out `skip..<skip+limit`. Swift's `sorted(by:)` makes **no stability guarantee**, so when a batch of products compares equal, their order after sorting is unspecified and can differ from one call to the next.
 
-The consequence is subtle and nasty. Page 0 is sliced from one ordering; page 1 is sliced from a *different* ordering of the same tied elements. An item sitting near the boundary can land in both slices (**duplicated**) or in neither (**skipped**). You won't see it in the first screen of results — it shows up as the occasional doubled or missing product deep in a long list, which is exactly the kind of thing that's miserable to reproduce.
+The consequence is subtle and nasty. Page 0 is sliced from one ordering; page 1 is sliced from a *different* ordering of the same tied elements. An item sitting near the boundary can land in both slices (**duplicated**) or in neither (**skipped**). You won't see it in the first screen of results, it shows up as the occasional doubled or missing product deep in a long list, which is exactly the kind of thing that's miserable to reproduce.
 
-The rule to internalize: **you can only paginate over a *total* ordering** — one with no ties, that's identical on every request. The fix is a one-liner: add the unique `id` as a tiebreaker.
+The rule to internalize: **you can only paginate over a *total* ordering**, one with no ties, that's identical on every request. The fix is a one-liner: add the unique `id` as a tiebreaker.
 
 ```swift
 // Backend — after
@@ -415,23 +415,23 @@ guard !(lhs.isPlaceholder || lhs.isPlaceholder) else { return false }
 guard !(lhs.isPlaceholder || rhs.isPlaceholder) else { return false }
 ```
 
-It referenced `lhs` twice instead of comparing both sides. It was *mostly* harmless here because placeholders are modelled as a separate `Item.placeholder` case and `ProductModel` hashes only on `id` — but it's precisely the kind of bug that bites the moment your equality logic gets more interesting. Audit your `==` and `hash(into:)` carefully; in a diffable world they're load-bearing.
+It referenced `lhs` twice instead of comparing both sides. It was *mostly* harmless here because placeholders are modelled as a separate `Item.placeholder` case and `ProductModel` hashes only on `id`, but it's precisely the kind of bug that bites the moment your equality logic gets more interesting. Audit your `==` and `hash(into:)` carefully; in a diffable world they're load-bearing.
 
 ### And one design trade-off (not a bug)
 
-`willDisplay`-based prefetch is **coarse**. Triggering on the first visible placeholder is dead simple and works well, but it fetches a touch late. For buttery infinite scroll you can switch to `UICollectionViewDataSourcePrefetching` and call `fetch(item:)` for upcoming index paths before they're on screen — and because the paging logic lives entirely in the ViewModel, the API doesn't change at all. That's the payoff of keeping the View dumb.
+`willDisplay`-based prefetch is **coarse**. Triggering on the first visible placeholder is dead simple and works well, but it fetches a touch late. For buttery infinite scroll you can switch to `UICollectionViewDataSourcePrefetching` and call `fetch(item:)` for upcoming index paths before they're on screen, and because the paging logic lives entirely in the ViewModel, the API doesn't change at all. That's the payoff of keeping the View dumb.
 
 ---
 
 ## Conclusion
 
-Pagination doesn't have to be a pile of flags and manual batch updates. By letting three tools each do what they're best at —
+Pagination doesn't have to be a pile of flags and manual batch updates. By letting three tools each do what they're best at
 
-- a **sparse `[Model?]`** that encodes "not loaded yet" directly in the data,
-- **diffable snapshots** that turn that data into animated cells with no `reloadData()`,
-- and **async/await `Task`s** that make each page cancellable and de-dupable,
+- a **sparse `[Model?]`** that encodes "not loaded yet" directly in the data
+- **diffable snapshots** that turn that data into animated cells with no `reloadData()`
+- and **async/await `Task`s** that make each page cancellable and de-dupable
 
-— you get an infinite list that's smooth, testable, and small enough to reason about. The View stays dumb, the ViewModel stays in control, and adding prefetching or changing the page size is a one-line change.
+you get an infinite list that's smooth, testable, and small enough to reason about. The View stays dumb, the ViewModel stays in control, and adding prefetching or changing the page size is a one-line change.
 
 Give it a try in your next list screen. Once you've shipped pagination this way, the old "append-and-reload" approach feels like doing arithmetic by hand.
 

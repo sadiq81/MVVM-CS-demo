@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0e1a"/>
+      <stop offset="1" stop-color="#141b30"/>
+    </linearGradient>
+    <radialGradient id="glowO" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F05138" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#F05138" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#4DA3FF" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#4DA3FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1b2440"/>
+      <stop offset="0.5" stop-color="#33426f"/>
+      <stop offset="1" stop-color="#1b2440"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1020" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0b1020" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F05138"/>
+      <stop offset="1" stop-color="#FF8A5B"/>
+    </linearGradient>
+    <pattern id="dots" x="48" y="48" width="44" height="44" patternUnits="userSpaceOnUse">
+      <circle cx="22" cy="22" r="1.6" fill="#ffffff" fill-opacity="0.035"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1230" cy="250" r="430" fill="url(#glowO)"/>
+  <circle cx="1080" cy="780" r="360" fill="url(#glowB)"/>
+  <rect x="48" y="48" width="848" height="800" fill="url(#dots)"/>
+
+  <!-- LEFT: title block -->
+  <text x="96" y="300" font-family="Helvetica Neue, Arial, sans-serif" font-size="22" letter-spacing="6" font-weight="700" fill="#F05138">UIKIT · SWIFT CONCURRENCY</text>
+  <text x="92" y="406" font-family="Helvetica Neue, Arial, sans-serif" font-size="82" font-weight="800" fill="#ffffff">Paginated</text>
+  <text x="92" y="500" font-family="Helvetica Neue, Arial, sans-serif" font-size="82" font-weight="800" fill="#ffffff">UICollectionView</text>
+  <rect x="96" y="540" width="120" height="6" rx="3" fill="url(#accent)"/>
+  <text x="96" y="606" font-family="Helvetica Neue, Arial, sans-serif" font-size="32" font-weight="600" fill="#AEB7CC">DiffableDataSource · MVVM · Async/Await</text>
+  <text x="96" y="652" font-family="Helvetica Neue, Arial, sans-serif" font-size="24" font-weight="400" fill="#6E7790">Smooth infinite scroll with sparse snapshots &amp; placeholder cells</text>
+
+  <!-- code chip -->
+  <rect x="96" y="700" width="448" height="56" rx="12" fill="#0e1526" stroke="#26304d" stroke-width="1.5"/>
+  <circle cx="120" cy="728" r="5" fill="#F05138"/>
+  <text x="138" y="736" font-family="SF Mono, Menlo, monospace" font-size="22" fill="#9FE1B0">await</text>
+  <text x="212" y="736" font-family="SF Mono, Menlo, monospace" font-size="22" fill="#CDD6EA">productService.fetch(skip:)</text>
+
+  <!-- RIGHT: phone mock -->
+  <rect x="980" y="120" width="500" height="700" rx="48" fill="#0d1322" stroke="#283150" stroke-width="2"/>
+  <rect x="1000" y="150" width="460" height="640" rx="30" fill="#0b1020"/>
+  <text x="1028" y="206" font-family="Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="700" fill="#ffffff">Search</text>
+  <circle cx="1420" cy="196" r="13" fill="none" stroke="#6E7790" stroke-width="3"/>
+  <line x1="1430" y1="206" x2="1438" y2="214" stroke="#6E7790" stroke-width="3" stroke-linecap="round"/>
+  <rect x="1028" y="228" width="78" height="30" rx="15" fill="#F05138"/>
+  <rect x="1116" y="228" width="96" height="30" rx="15" fill="#1a2238"/>
+  <rect x="1222" y="228" width="74" height="30" rx="15" fill="#1a2238"/>
+
+  <!-- loaded card 1 -->
+  <rect x="1024" y="278" width="412" height="92" rx="16" fill="#151d33" stroke="#222c47" stroke-width="1"/>
+  <rect x="1040" y="294" width="60" height="60" rx="12" fill="#26314f"/>
+  <circle cx="1058" cy="314" r="7" fill="#F0A23A"/>
+  <path d="M1046 352 L1066 328 L1094 352 Z" fill="#3a4f6e"/>
+  <rect x="1118" y="300" width="190" height="13" rx="6" fill="#3a4f6e"/>
+  <rect x="1118" y="324" width="128" height="11" rx="5" fill="#2b3556"/>
+  <rect x="1118" y="344" width="86" height="10" rx="5" fill="#242e4c"/>
+  <rect x="1352" y="308" width="68" height="30" rx="15" fill="url(#accent)"/>
+
+  <!-- loaded card 2 -->
+  <rect x="1024" y="382" width="412" height="92" rx="16" fill="#151d33" stroke="#222c47" stroke-width="1"/>
+  <rect x="1040" y="398" width="60" height="60" rx="12" fill="#26314f"/>
+  <circle cx="1058" cy="418" r="7" fill="#F0A23A"/>
+  <path d="M1046 456 L1066 432 L1094 456 Z" fill="#3a4f6e"/>
+  <rect x="1118" y="404" width="190" height="13" rx="6" fill="#3a4f6e"/>
+  <rect x="1118" y="428" width="128" height="11" rx="5" fill="#2b3556"/>
+  <rect x="1118" y="448" width="86" height="10" rx="5" fill="#242e4c"/>
+  <rect x="1352" y="412" width="68" height="30" rx="15" fill="url(#accent)"/>
+
+  <!-- placeholder card 1 -->
+  <rect x="1024" y="560" width="412" height="92" rx="16" fill="#10182b" stroke="#222c47" stroke-width="1"/>
+  <rect x="1040" y="576" width="60" height="60" rx="12" fill="url(#shimmer)"/>
+  <rect x="1118" y="584" width="210" height="13" rx="6" fill="url(#shimmer)"/>
+  <rect x="1118" y="608" width="150" height="11" rx="5" fill="url(#shimmer)"/>
+  <rect x="1118" y="628" width="96" height="10" rx="5" fill="url(#shimmer)"/>
+  <path d="M1406 594 a16 16 0 1 1 -16 -16" fill="none" stroke="#F05138" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- placeholder card 2 -->
+  <rect x="1024" y="664" width="412" height="92" rx="16" fill="#10182b" stroke="#222c47" stroke-width="1"/>
+  <rect x="1040" y="680" width="60" height="60" rx="12" fill="url(#shimmer)"/>
+  <rect x="1118" y="688" width="210" height="13" rx="6" fill="url(#shimmer)"/>
+  <rect x="1118" y="712" width="150" height="11" rx="5" fill="url(#shimmer)"/>
+  <rect x="1118" y="732" width="96" height="10" rx="5" fill="url(#shimmer)"/>
+  <path d="M1406 698 a16 16 0 1 1 -16 -16" fill="none" stroke="#F05138" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- pagination boundary chip -->
+  <rect x="1150" y="486" width="170" height="44" rx="22" fill="#0e1526" stroke="#F05138" stroke-width="1.5"/>
+  <circle cx="1176" cy="508" r="5" fill="#F05138"/>
+  <text x="1190" y="515" font-family="SF Mono, Menlo, monospace" font-size="18" fill="#CDD6EA">loading 40–60</text>
+
+  <!-- bottom fade + chevron -->
+  <rect x="1000" y="700" width="460" height="90" fill="url(#fade)"/>
+  <path d="M1210 752 l20 18 l20 -18" fill="none" stroke="#5b677f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
